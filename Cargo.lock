@@ -3852,7 +3852,7 @@ checksum = "9afc2bd4d5a73106dd53d10d73d3401c2f32730ba2c0b93ddb888a8983680471"
 [[package]]
 name = "fastlanes"
 version = "0.5.0"
-source = "git+https://github.com/spiraldb/fastlanes.git?branch=adamg%2Factually-compare-packed-bools#109c29f25b66a351bf6cb814335d3dff595680be"
+source = "git+https://github.com/spiraldb/fastlanes.git?branch=adamg%2Factually-compare-packed-bools#56236df6286acca69d63036d7d8681f615d135ac"
 dependencies = [
  "arrayref",
  "const_for",
