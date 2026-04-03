@@ -3852,8 +3852,7 @@ checksum = "9afc2bd4d5a73106dd53d10d73d3401c2f32730ba2c0b93ddb888a8983680471"
 [[package]]
 name = "fastlanes"
 version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "414cb755aee48ff7b0907995d2949c68c8c17900970076dff6a808e18e592d71"
+source = "git+https://github.com/spiraldb/fastlanes.git?branch=adamg%2Factually-compare-packed-bools#aff6e2d94e0a48c5bfbebb4066607e97bda73b60"
 dependencies = [
  "arrayref",
  "const_for",
