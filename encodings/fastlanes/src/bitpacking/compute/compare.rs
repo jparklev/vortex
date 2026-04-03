@@ -27,6 +27,7 @@ use vortex_buffer::BufferMut;
 use vortex_error::VortexResult;
 
 use crate::BitPacked;
+use crate::BitPackedArrayExt;
 use crate::BitPackedData;
 
 impl CompareKernel for BitPacked {
@@ -44,9 +45,9 @@ impl CompareKernel for BitPacked {
             return Ok(None);
         }
 
-        match_each_integer_ptype!(lhs.ptype(), |T| {
+        match_each_integer_ptype!(lhs.dtype().as_ptype(), |T| {
             let value = T::try_from(&constant)?;
-            compare_constant::<T>(&lhs, value, rhs.dtype().nullability(), operator, ctx).map(Some)
+            compare_constant::<T>(lhs, value, rhs.dtype().nullability(), operator, ctx).map(Some)
         })
     }
 }
@@ -70,16 +71,16 @@ impl BetweenKernel for BitPacked {
         let nullability =
             array.dtype().nullability() | lower.dtype().nullability() | upper.dtype().nullability();
 
-        match_each_integer_ptype!(array.ptype(), |T| {
+        match_each_integer_ptype!(array.dtype().as_ptype(), |T| {
             let lower = T::try_from(&lower)?;
             let upper = T::try_from(&upper)?;
-            between_constant::<T>(&array, lower, upper, nullability, options, ctx).map(Some)
+            between_constant::<T>(array, lower, upper, nullability, options, ctx).map(Some)
         })
     }
 }
 
 fn compare_constant<T>(
-    array: &BitPackedData,
+    array: ArrayView<'_, BitPacked>,
     value: T,
     nullability: Nullability,
     operator: CompareOperator,
@@ -99,7 +100,7 @@ where
 }
 
 fn compare_constant_typed<U, T>(
-    array: &BitPackedData,
+    array: ArrayView<'_, BitPacked>,
     value: T,
     nullability: Nullability,
     operator: CompareOperator,
@@ -110,7 +111,7 @@ where
     U: UnsignedPType + BitPacking + BitPackingCompare,
 {
     let mut bits =
-        collect_chunk_masks::<U>(array, |bit_width, packed_chunk, chunk_matches| unsafe {
+        collect_chunk_masks::<U>(array.data(), array.len(), array.offset(), |bit_width, packed_chunk, chunk_matches| unsafe {
             U::unchecked_unpack_cmp(
                 bit_width,
                 packed_chunk,
@@ -134,7 +135,7 @@ where
 }
 
 fn between_constant<T>(
-    array: &BitPackedData,
+    array: ArrayView<'_, BitPacked>,
     lower: T,
     upper: T,
     nullability: Nullability,
@@ -156,7 +157,7 @@ where
 }
 
 fn between_constant_typed<U, T>(
-    array: &BitPackedData,
+    array: ArrayView<'_, BitPacked>,
     lower: T,
     upper: T,
     nullability: Nullability,
@@ -170,7 +171,9 @@ where
     let mut bits = match (options.lower_strict, options.upper_strict) {
         (StrictComparison::Strict, StrictComparison::Strict) => {
             collect_between_masks::<U, T, _, _>(
-                array,
+                array.data(),
+                array.len(),
+                array.offset(),
                 lower,
                 upper,
                 NativePType::is_lt,
@@ -179,7 +182,9 @@ where
         }
         (StrictComparison::Strict, StrictComparison::NonStrict) => {
             collect_between_masks::<U, T, _, _>(
-                array,
+                array.data(),
+                array.len(),
+                array.offset(),
                 lower,
                 upper,
                 NativePType::is_lt,
@@ -188,7 +193,9 @@ where
         }
         (StrictComparison::NonStrict, StrictComparison::Strict) => {
             collect_between_masks::<U, T, _, _>(
-                array,
+                array.data(),
+                array.len(),
+                array.offset(),
                 lower,
                 upper,
                 NativePType::is_le,
@@ -197,7 +204,9 @@ where
         }
         (StrictComparison::NonStrict, StrictComparison::NonStrict) => {
             collect_between_masks::<U, T, _, _>(
-                array,
+                array.data(),
+                array.len(),
+                array.offset(),
                 lower,
                 upper,
                 NativePType::is_le,
@@ -222,6 +231,8 @@ where
 
 fn collect_between_masks<U, T, LF, UF>(
     array: &BitPackedData,
+    len: usize,
+    offset: u16,
     lower: T,
     upper: T,
     lower_matches: LF,
@@ -233,7 +244,7 @@ where
     LF: Fn(T, T) -> bool + Copy,
     UF: Fn(T, T) -> bool + Copy,
 {
-    collect_unpacked_chunk_masks::<U>(array, |unpacked, chunk_matches| {
+    collect_unpacked_chunk_masks::<U>(array, len, offset, |unpacked, chunk_matches| {
         fill_between_chunk::<U, T, LF, UF>(
             unpacked,
             chunk_matches,
@@ -247,19 +258,21 @@ where
 
 fn collect_chunk_masks<U>(
     array: &BitPackedData,
+    len: usize,
+    offset: u16,
     mut fill_chunk: impl FnMut(usize, &[U], &mut [u64; 16]),
 ) -> BitBufferMut
 where
     U: UnsignedPType + BitPacking,
 {
-    if array.is_empty() {
+    if len == 0 {
         return BitBufferMut::empty();
     }
 
     let bit_width = array.bit_width() as usize;
     let packed = array.packed_slice::<U>();
     let elems_per_chunk = 128 * bit_width / size_of::<U>();
-    let num_chunks = (array.offset() as usize + array.len()).div_ceil(1024);
+    let num_chunks = (offset as usize + len).div_ceil(1024);
     let mut output = BufferMut::<u64>::with_capacity(num_chunks * 16);
 
     for chunk_idx in 0..num_chunks {
@@ -272,33 +285,35 @@ where
     let total_len = num_chunks * 1024;
     let mut output = BitBufferMut::from_buffer(output.into_byte_buffer(), 0, total_len);
 
-    if array.offset() == 0 {
-        output.truncate(array.len());
+    if offset == 0 {
+        output.truncate(len);
         return output;
     }
 
     BitBufferMut::copy_from(
         &output
             .freeze()
-            .slice(array.offset() as usize..array.offset() as usize + array.len()),
+            .slice(offset as usize..offset as usize + len),
     )
 }
 
 fn collect_unpacked_chunk_masks<U>(
     array: &BitPackedData,
+    len: usize,
+    offset: u16,
     mut fill_chunk: impl FnMut(&[U; 1024], &mut [u64; 16]),
 ) -> BitBufferMut
 where
     U: UnsignedPType + BitPacking,
 {
-    if array.is_empty() {
+    if len == 0 {
         return BitBufferMut::empty();
     }
 
     let bit_width = array.bit_width() as usize;
     let packed = array.packed_slice::<U>();
     let elems_per_chunk = 128 * bit_width / size_of::<U>();
-    let num_chunks = (array.offset() as usize + array.len()).div_ceil(1024);
+    let num_chunks = (offset as usize + len).div_ceil(1024);
     let mut output = BufferMut::<u64>::with_capacity(num_chunks * 16);
     let mut unpacked = [U::default(); 1024];
     let mut chunk_matches = [0u64; 16];
@@ -318,15 +333,15 @@ where
     let total_len = num_chunks * 1024;
     let mut output = BitBufferMut::from_buffer(output.into_byte_buffer(), 0, total_len);
 
-    if array.offset() == 0 {
-        output.truncate(array.len());
+    if offset == 0 {
+        output.truncate(len);
         return output;
     }
 
     BitBufferMut::copy_from(
         &output
             .freeze()
-            .slice(array.offset() as usize..array.offset() as usize + array.len()),
+            .slice(offset as usize..offset as usize + len),
     )
 }
 
@@ -435,6 +450,7 @@ mod tests {
     use vortex_array::scalar_fn::fns::operators::CompareOperator;
 
     use crate::BitPacked;
+    use crate::BitPackedArrayExt;
     use crate::bitpack_compress::bitpack_encode;
 
     fn bp(array: &PrimitiveArray, bit_width: u8) -> crate::BitPackedArray {
