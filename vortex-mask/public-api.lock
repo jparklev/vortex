@@ -82,6 +82,8 @@ pub fn vortex_mask::Mask::new_true(usize) -> Self
 
 pub fn vortex_mask::Mask::rank(&self, usize) -> usize
 
+pub fn vortex_mask::Mask::rank_batch(&self, &[usize]) -> alloc::vec::Vec<usize>
+
 pub fn vortex_mask::Mask::slice(&self, impl core::ops::range::RangeBounds<usize>) -> Self
 
 pub fn vortex_mask::Mask::slices(&self) -> vortex_mask::AllOr<&[(usize, usize)]>

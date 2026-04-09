@@ -25,6 +25,8 @@ use crate::bit::count_ones::count_ones;
 use crate::bit::get_bit_unchecked;
 use crate::bit::ops::bitwise_binary_op;
 use crate::bit::ops::bitwise_unary_op;
+use crate::bit::select::bit_select;
+use crate::bit::select::bit_select_sorted_batch;
 use crate::buffer;
 
 /// An immutable bitset stored as a packed byte buffer.
@@ -317,6 +319,37 @@ impl BitBuffer {
     /// Get the number of set bits in the buffer.
     pub fn true_count(&self) -> usize {
         count_ones(self.buffer.as_slice(), self.offset, self.len)
+    }
+
+    /// Returns the position of the `nth` set bit (0-indexed).
+    ///
+    /// This is the "select" operation on a bitmap: given a rank `nth`, find
+    /// which logical bit position holds that rank.
+    ///
+    /// # Panics
+    ///
+    /// Panics (debug) or produces undefined results (release) if `nth` is
+    /// greater than or equal to [`true_count`](Self::true_count).
+    pub fn select(&self, nth: usize) -> usize {
+        bit_select(self.buffer.as_slice(), self.offset, self.len, nth)
+    }
+
+    /// Select positions for multiple ranks in a single pass over the bitmap.
+    ///
+    /// `sorted_ranks` must be sorted in non-decreasing order, with each value
+    /// less than [`true_count`](Self::true_count). This is O(L/64 + N) where
+    /// L = bitmap length and N = number of ranks, compared to O(N × L/64) for
+    /// individual [`select`](Self::select) calls.
+    pub fn select_sorted_batch(&self, sorted_ranks: &[usize]) -> Vec<usize> {
+        let mut out = vec![0; sorted_ranks.len()];
+        bit_select_sorted_batch(
+            self.buffer.as_slice(),
+            self.offset,
+            self.len,
+            sorted_ranks,
+            &mut out,
+        );
+        out
     }
 
     /// Get the number of unset bits in the buffer.

@@ -89,6 +89,22 @@ fn test_mask_value() {
 }
 
 #[test]
+fn test_rank_batch_sorted_ranks() {
+    let mask = Mask::from_buffer(BitBuffer::from_iter([
+        false, true, false, true, true, false, false, true,
+    ]));
+
+    assert_eq!(mask.rank_batch(&[0, 1, 2, 3]), vec![1, 3, 4, 7]);
+}
+
+#[test]
+fn test_rank_batch_unsorted_ranks_with_cached_indices() {
+    let mask = Mask::from_indices(8, vec![1, 3, 4, 7]);
+
+    assert_eq!(mask.rank_batch(&[3, 0, 2, 1]), vec![7, 1, 4, 3]);
+}
+
+#[test]
 fn test_mask_first() {
     assert_eq!(Mask::new_true(5).first(), Some(0));
     assert_eq!(Mask::new_false(5).first(), None);

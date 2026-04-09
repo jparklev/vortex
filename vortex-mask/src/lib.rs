@@ -473,8 +473,52 @@ impl Mask {
         match &self {
             Self::AllTrue(_) => n,
             Self::AllFalse(_) => unreachable!("no true values in all-false mask"),
-            // TODO(joe): optimize this function
-            Self::Values(values) => values.indices()[n],
+            Self::Values(values) => values.buffer.select(n),
+        }
+    }
+
+    /// Translate multiple positions through the mask in batch.
+    ///
+    /// For each `ranks[i]`, computes the position of the `ranks[i]`-th set bit,
+    /// equivalent to calling [`rank`](Self::rank) for each element.
+    ///
+    /// This is O(N log N + L/64) vs O(N × L/64) for individual calls, where
+    /// N = `ranks.len()` and L = mask length.
+    pub fn rank_batch(&self, ranks: &[usize]) -> Vec<usize> {
+        if ranks.is_empty() {
+            return vec![];
+        }
+        match &self {
+            Self::AllTrue(_) => ranks.to_vec(),
+            Self::AllFalse(_) => unreachable!("no true values in all-false mask"),
+            Self::Values(values) => {
+                if let Some(indices) = values.indices.get() {
+                    return ranks.iter().map(|&rank| indices[rank]).collect();
+                }
+
+                if ranks.is_sorted() {
+                    return values.buffer.select_sorted_batch(ranks);
+                }
+
+                if ranks.len() >= values.true_count().div_ceil(2) {
+                    let indices = values.indices();
+                    return ranks.iter().map(|&rank| indices[rank]).collect();
+                }
+
+                // Sort an index permutation by rank value.
+                let mut perm: Vec<usize> = (0..ranks.len()).collect();
+                perm.sort_unstable_by_key(|&i| ranks[i]);
+
+                let sorted_ranks: Vec<usize> = perm.iter().map(|&i| ranks[i]).collect();
+                let sorted_results = values.buffer.select_sorted_batch(&sorted_ranks);
+
+                // Scatter back to original order.
+                let mut results = vec![0usize; ranks.len()];
+                for (perm_idx, &orig_idx) in perm.iter().enumerate() {
+                    results[orig_idx] = sorted_results[perm_idx];
+                }
+                results
+            }
         }
     }
 
