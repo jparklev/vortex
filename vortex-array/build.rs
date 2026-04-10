@@ -40,16 +40,22 @@ fn main() {
     // "x86-64-v3" (AVX2) to avoid emitting unsupported instructions (e.g. AVX-512).
     let mcpu = env::var("MOJO_MCPU").unwrap_or_else(|_| "native".to_owned());
 
-    let status = Command::new(&mojo_bin)
-        .arg("build")
+    // Cargo sets TARGET to e.g. "x86_64-unknown-linux-gnu". Pass it through so Mojo
+    // doesn't fail with "unknown target triple" when the build env differs from the host.
+    let target_triple = env::var("TARGET").ok();
+
+    let mut cmd = Command::new(&mojo_bin);
+    cmd.arg("build")
         .arg("--emit")
         .arg("object")
         .arg("--mcpu")
-        .arg(&mcpu)
-        .arg("-o")
-        .arg(&obj_path)
-        .arg(&kernel_src)
-        .status();
+        .arg(&mcpu);
+
+    if let Some(triple) = &target_triple {
+        cmd.arg("--target-triple").arg(triple);
+    }
+
+    let status = cmd.arg("-o").arg(&obj_path).arg(&kernel_src).status();
 
     let status = match status {
         Ok(s) => s,
