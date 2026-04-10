@@ -418,3 +418,24 @@ fn decode_primitive_u32(bencher: Bencher, avg_run_length: usize) {
             runend_decode_primitive(ends.clone(), values.clone(), 0, PRIM_TOTAL)
         });
 }
+
+/// Scalar-only baseline: raw Rust fill loop matching what `push_n_unchecked` does.
+#[divan::bench(args = PRIM_RUN_LENGTHS, sample_count = 10_000)]
+fn decode_primitive_u32_scalar(bencher: Bencher, avg_run_length: usize) {
+    let (ends_arr, values_arr) = create_primitive_test_data(PRIM_TOTAL, avg_run_length);
+    let ends = ends_arr.as_slice::<u32>().to_vec();
+    let values = values_arr.as_slice::<u32>().to_vec();
+
+    bencher.bench(|| {
+        let mut output = vec![0u32; PRIM_TOTAL];
+        let mut pos = 0usize;
+        for (end, &val) in ends.iter().zip(values.iter()) {
+            let end = *end as usize;
+            while pos < end {
+                output[pos] = val;
+                pos += 1;
+            }
+        }
+        divan::black_box(output)
+    });
+}
