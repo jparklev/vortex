@@ -744,7 +744,7 @@ jobs:
         with:
           tool: cargo-codspeed
       - name: Install Mojo SDK
-        if: contains(matrix.packages, 'vortex-array')
+        if: contains(matrix.packages, 'vortex-array') || contains(matrix.packages, 'vortex-runend')
         run: |
           pip install --user mojo
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"

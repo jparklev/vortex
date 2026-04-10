@@ -177,6 +177,15 @@ pub fn runend_decode_primitive(
     offset: usize,
     length: usize,
 ) -> VortexResult<PrimitiveArray> {
+    // Fast path: Mojo SIMD broadcast decode for non-nullable u32-ended arrays
+    // with no offset (the common case for full-array canonicalization).
+    #[cfg(vortex_mojo)]
+    {
+        if let Some(result) = mojo_decode::try_mojo_decode(&ends, &values, offset, length)? {
+            return Ok(result);
+        }
+    }
+
     let validity_mask = values.validity_mask()?;
     Ok(match_each_native_ptype!(values.ptype(), |P| {
         match_each_unsigned_integer_ptype!(ends.ptype(), |E| {
@@ -367,5 +376,76 @@ mod test {
         let expected = PrimitiveArray::from_iter(vec![1i32, 1, 2, 2, 2, 3, 3, 3, 3, 3]);
         assert_arrays_eq!(decoded, expected);
         Ok(())
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Mojo SIMD broadcast decode — used when the Mojo SDK was available at build time.
+// ---------------------------------------------------------------------------
+
+#[cfg(vortex_mojo)]
+mod mojo_decode {
+    use std::mem::size_of;
+
+    use vortex_array::arrays::PrimitiveArray;
+    use vortex_array::arrays::primitive::PrimitiveArrayExt;
+    use vortex_array::dtype::PType;
+    use vortex_array::match_each_native_ptype;
+    use vortex_buffer::BufferMut;
+    use vortex_error::VortexResult;
+
+    unsafe extern "C" {
+        fn vortex_runend_decode_1byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
+        fn vortex_runend_decode_2byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
+        fn vortex_runend_decode_4byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
+        fn vortex_runend_decode_8byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
+    }
+
+    /// Try the Mojo SIMD decode path. Returns `Some` on success, `None` to fall through
+    /// to the generic Rust path (e.g. for nullable values, non-u32 ends, or with offset).
+    pub(super) fn try_mojo_decode(
+        ends: &PrimitiveArray,
+        values: &PrimitiveArray,
+        offset: usize,
+        length: usize,
+    ) -> VortexResult<Option<PrimitiveArray>> {
+        // Only handle the common fast path: u32 ends, non-nullable, no offset.
+        if ends.ptype() != PType::U32 || offset != 0 || values.dtype().is_nullable() {
+            return Ok(None);
+        }
+
+        let kernel: unsafe extern "C" fn(usize, usize, usize, usize) =
+            match size_of::<u8>().checked_mul(values.ptype().byte_width()) {
+                Some(1) => vortex_runend_decode_1byte,
+                Some(2) => vortex_runend_decode_2byte,
+                Some(4) => vortex_runend_decode_4byte,
+                Some(8) => vortex_runend_decode_8byte,
+                _ => return Ok(None),
+            };
+
+        let ends_slice = ends.as_slice::<u32>();
+        let num_runs = ends_slice.len();
+
+        match_each_native_ptype!(values.ptype(), |T| {
+            let values_slice: &[T] = values.as_slice();
+            let mut buffer = BufferMut::<T>::with_capacity(length);
+
+            // SAFETY: The Mojo kernel reads `num_runs` ends and values, writes up to
+            // `length` elements to dst. All buffers are pre-allocated.
+            unsafe {
+                kernel(
+                    ends_slice.as_ptr() as usize,
+                    values_slice.as_ptr() as usize,
+                    buffer.spare_capacity_mut().as_mut_ptr() as usize,
+                    num_runs,
+                );
+                buffer.set_len(length);
+            }
+
+            Ok(Some(PrimitiveArray::new(
+                buffer.freeze(),
+                values.dtype().nullability().into(),
+            )))
+        })
     }
 }
