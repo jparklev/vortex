@@ -42,16 +42,21 @@ fn main() {
 
     // Cargo sets TARGET to e.g. "x86_64-unknown-linux-gnu". Pass it through so Mojo
     // doesn't fail with "unknown target triple" when the build env differs from the host.
-    let target_triple = env::var("TARGET").ok();
+    // On macOS, Mojo's host detection works correctly but it rejects the Cargo triple format
+    // and --mcpu=native also triggers the broken host triple detection, so skip both there.
+    let is_apple = env::var("TARGET")
+        .map(|t| t.contains("apple"))
+        .unwrap_or(false);
+    let target_triple = env::var("TARGET")
+        .ok()
+        .filter(|_| !is_apple);
 
     let mut cmd = Command::new(&mojo_bin);
-    cmd.arg("build")
-        .arg("--emit")
-        .arg("object")
-        .arg("--mcpu")
-        .arg(&mcpu)
-        .arg("--mtune")
-        .arg(&mcpu);
+    cmd.arg("build").arg("--emit").arg("object");
+
+    if !is_apple || mcpu != "native" {
+        cmd.arg("--mcpu").arg(&mcpu).arg("--mtune").arg(&mcpu);
+    }
 
     if let Some(triple) = &target_triple {
         cmd.arg("--target-triple").arg(triple);

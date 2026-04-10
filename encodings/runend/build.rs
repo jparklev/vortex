@@ -34,16 +34,23 @@ fn main() {
     // Use MOJO_MCPU to control target CPU (defaults to "native").
     // CI sets this to "skylake" for vpgatherqd and SIMD broadcast.
     let mcpu = env::var("MOJO_MCPU").unwrap_or_else(|_| "native".to_owned());
-    let target_triple = env::var("TARGET").ok();
+
+    // On macOS, Mojo's host detection works correctly but it rejects the Cargo
+    // triple format and "native" CPU also triggers the broken host triple detection.
+    // Skip both flags on Apple targets; Mojo auto-detects correctly without them.
+    let is_apple = env::var("TARGET")
+        .map(|t| t.contains("apple"))
+        .unwrap_or(false);
+    let target_triple = env::var("TARGET")
+        .ok()
+        .filter(|_| !is_apple);
 
     let mut cmd = Command::new(&mojo_bin);
-    cmd.arg("build")
-        .arg("--emit")
-        .arg("object")
-        .arg("--mcpu")
-        .arg(&mcpu)
-        .arg("--mtune")
-        .arg(&mcpu);
+    cmd.arg("build").arg("--emit").arg("object");
+
+    if !is_apple || mcpu != "native" {
+        cmd.arg("--mcpu").arg(&mcpu).arg("--mtune").arg(&mcpu);
+    }
 
     if let Some(triple) = &target_triple {
         cmd.arg("--target-triple").arg(triple);
