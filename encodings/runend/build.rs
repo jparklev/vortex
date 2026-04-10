@@ -16,15 +16,9 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
-    // The shared Mojo kernel lives in vortex-array/kernels/.
+    // The Mojo kernel lives alongside this crate.
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").expect("CARGO_MANIFEST_DIR not set");
-    let kernel_src = Path::new(&manifest_dir)
-        .join("../../vortex-array/kernels/take.mojo")
-        .canonicalize()
-        .unwrap_or_else(|_| {
-            // Fallback for non-standard layouts.
-            Path::new(&manifest_dir).join("../../vortex-array/kernels/take.mojo")
-        });
+    let kernel_src = Path::new(&manifest_dir).join("kernels/decode.mojo");
 
     println!("cargo:rerun-if-changed={}", kernel_src.display());
 

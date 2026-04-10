@@ -9,16 +9,10 @@ pub use array::chunk_range;
 pub use array::patch_chunk;
 pub use vtable::PrimitiveArray;
 
-pub(crate) mod compute;
+mod compute;
 
 mod vtable;
 pub use compute::rules::PrimitiveMaskedValidityRule;
-#[doc(hidden)]
-pub use compute::take::bench_take_avx2;
-#[doc(hidden)]
-pub use compute::take::bench_take_mojo;
-#[doc(hidden)]
-pub use compute::take::bench_take_scalar;
 pub use vtable::Primitive;
 
 mod native_value;

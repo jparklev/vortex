@@ -7,7 +7,7 @@ mod fill_null;
 mod mask;
 pub(crate) mod rules;
 mod slice;
-pub(crate) mod take;
+mod take;
 
 #[cfg(test)]
 mod tests {

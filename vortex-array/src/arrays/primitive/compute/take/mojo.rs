@@ -79,10 +79,7 @@ impl TakeImpl for TakeKernelMojo {
 }
 
 /// Dispatch to the appropriate Mojo kernel based on value byte width and index type.
-pub(super) fn take_mojo<V: NativePType, I: UnsignedPType>(
-    values: &[V],
-    indices: &[I],
-) -> Buffer<V> {
+fn take_mojo<V: NativePType, I: UnsignedPType>(values: &[V], indices: &[I]) -> Buffer<V> {
     let len = indices.len();
     let mut buffer = BufferMut::<V>::with_capacity(len);
 
