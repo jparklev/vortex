@@ -59,7 +59,7 @@ trait TakeImpl: Send + Sync {
     ) -> VortexResult<ArrayRef>;
 }
 
-#[expect(unused)]
+#[allow(unused)]
 struct TakeKernelScalar;
 
 impl TakeImpl for TakeKernelScalar {
