@@ -14,7 +14,9 @@
 use divan::Bencher;
 use rand::distr::Uniform;
 use rand::prelude::*;
-use vortex_array::arrays::primitive::{bench_take_avx2, bench_take_mojo, bench_take_scalar};
+use vortex_array::arrays::primitive::bench_take_avx2;
+use vortex_array::arrays::primitive::bench_take_mojo;
+use vortex_array::arrays::primitive::bench_take_scalar;
 
 fn main() {
     divan::main();

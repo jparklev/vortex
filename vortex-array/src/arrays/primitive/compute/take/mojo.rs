@@ -16,6 +16,7 @@ use vortex_buffer::Buffer;
 use vortex_buffer::BufferMut;
 use vortex_error::VortexResult;
 
+use super::TakeImpl;
 use crate::ArrayRef;
 use crate::IntoArray;
 use crate::array::ArrayView;
@@ -27,8 +28,6 @@ use crate::dtype::UnsignedPType;
 use crate::match_each_native_ptype;
 use crate::match_each_unsigned_integer_ptype;
 use crate::validity::Validity;
-
-use super::TakeImpl;
 
 // ---------------------------------------------------------------------------
 // Mojo extern declarations — pointers passed as usize (Mojo `Int`).
