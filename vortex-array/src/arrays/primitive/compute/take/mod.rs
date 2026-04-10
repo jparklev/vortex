@@ -7,9 +7,6 @@ mod avx2;
 #[cfg(vortex_mojo)]
 mod mojo;
 
-#[cfg(vortex_nightly)]
-mod portable;
-
 use std::sync::LazyLock;
 
 use vortex_buffer::Buffer;
@@ -41,11 +38,7 @@ static PRIMITIVE_TAKE_KERNEL: LazyLock<&'static dyn TakeImpl> = LazyLock::new(||
             // With --mcpu=skylake this generates vpgatherqd and matches hand-written
             // AVX2 while also working on ARM (NEON) and other platforms.
             &mojo::TakeKernelMojo
-        } else if #[cfg(vortex_nightly)] {
-            // nightly codepath: use portable_simd kernel
-            &portable::TakeKernelPortableSimd
-        } else if #[cfg(target_arch = "x86_64")] {
-            // stable x86_64 path without Mojo: AVX2 intrinsics when available.
+        } else if #[cfg(any(target_arch = "x86_64", target_arch = "x86"))] {
             if is_x86_feature_detected!("avx2") {
                 &avx2::TakeKernelAVX2
             } else {
@@ -66,7 +59,6 @@ trait TakeImpl: Send + Sync {
     ) -> VortexResult<ArrayRef>;
 }
 
-#[allow(unused)]
 struct TakeKernelScalar;
 
 impl TakeImpl for TakeKernelScalar {
@@ -119,7 +111,6 @@ impl TakeExecute for Primitive {
 }
 
 // Compiler may see this as unused based on enabled features
-#[allow(unused)]
 #[inline(always)]
 fn take_primitive_scalar<T: NativePType, I: IntegerPType>(
     buffer: &[T],

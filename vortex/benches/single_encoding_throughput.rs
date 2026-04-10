@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-FileCopyrightText: Copyright the Vortex contributors
 
-#![allow(clippy::unwrap_used)]
-#![allow(clippy::cast_possible_truncation)]
-#![allow(unexpected_cfgs)]
+#![expect(clippy::unwrap_used)]
+#![expect(clippy::cast_possible_truncation)]
 
 use std::sync::LazyLock;
 
@@ -85,7 +84,7 @@ fn setup_primitive_arrays() -> (PrimitiveArray, PrimitiveArray, PrimitiveArray) 
     (uint_array, int_array, float_array)
 }
 
-#[allow(clippy::cast_possible_truncation)]
+#[expect(clippy::cast_possible_truncation)]
 fn gen_varbin_words(len: usize, uniqueness: f64) -> Vec<String> {
     let mut rng = StdRng::seed_from_u64(0);
     let uniq_cnt = (len as f64 * uniqueness) as usize;
@@ -451,7 +450,6 @@ mod turboquant_benches {
     use vortex_buffer::BufferMut;
     use vortex_tensor::encodings::turboquant::TurboQuantConfig;
     use vortex_tensor::encodings::turboquant::turboquant_encode_unchecked;
-    use vortex_tensor::scalar_fns::ApproxOptions;
     use vortex_tensor::scalar_fns::l2_denorm::normalize_as_l2_denorm;
     use vortex_tensor::vector::Vector;
 
@@ -499,7 +497,7 @@ mod turboquant_benches {
     fn setup_normalized_vector_ext(dim: usize) -> ExtensionArray {
         let ext = setup_vector_ext(dim);
         let mut ctx = SESSION.create_execution_ctx();
-        let normalized = normalize_as_l2_denorm(&ApproxOptions::Exact, ext.into_array(), &mut ctx)
+        let normalized = normalize_as_l2_denorm(ext.into_array(), &mut ctx)
             .unwrap()
             .child_at(0)
             .clone();
