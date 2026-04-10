@@ -202,14 +202,14 @@ fn filter_8byte(src: Int, idx: Int, dst: Int, n: Int):
 # ---------------------------------------------------------------------------
 
 @always_inline
-fn _runend_decode[VT: DType, W: Int](
+fn _runend_decode[VT: DType, ET: DType, W: Int](
     ends_addr: Int,
     values_addr: Int,
     dst_addr: Int,
     num_runs: Int,
 ):
     """Decode run-end encoded data using SIMD broadcast fill."""
-    var _e: UInt32 = 0
+    var _e: Scalar[ET] = 0
     var _v: Scalar[VT] = 0
     comptime EP = type_of(UnsafePointer(to=_e))
     comptime VP = type_of(UnsafePointer(to=_v))
@@ -239,18 +239,36 @@ fn _runend_decode[VT: DType, W: Int](
         pos = end
 
 
+# u32 ends variants
 @export("vortex_runend_decode_1byte")
 fn runend_decode_1byte(ends: Int, values: Int, dst: Int, num_runs: Int):
-    _runend_decode[DType.uint8, W1](ends, values, dst, num_runs)
+    _runend_decode[DType.uint8, DType.uint32, W1](ends, values, dst, num_runs)
 
 @export("vortex_runend_decode_2byte")
 fn runend_decode_2byte(ends: Int, values: Int, dst: Int, num_runs: Int):
-    _runend_decode[DType.uint16, W2](ends, values, dst, num_runs)
+    _runend_decode[DType.uint16, DType.uint32, W2](ends, values, dst, num_runs)
 
 @export("vortex_runend_decode_4byte")
 fn runend_decode_4byte(ends: Int, values: Int, dst: Int, num_runs: Int):
-    _runend_decode[DType.uint32, W4](ends, values, dst, num_runs)
+    _runend_decode[DType.uint32, DType.uint32, W4](ends, values, dst, num_runs)
 
 @export("vortex_runend_decode_8byte")
 fn runend_decode_8byte(ends: Int, values: Int, dst: Int, num_runs: Int):
-    _runend_decode[DType.uint64, W8](ends, values, dst, num_runs)
+    _runend_decode[DType.uint64, DType.uint32, W8](ends, values, dst, num_runs)
+
+# u64 ends variants
+@export("vortex_runend_decode_1byte_u64ends")
+fn runend_decode_1byte_u64ends(ends: Int, values: Int, dst: Int, num_runs: Int):
+    _runend_decode[DType.uint8, DType.uint64, W1](ends, values, dst, num_runs)
+
+@export("vortex_runend_decode_2byte_u64ends")
+fn runend_decode_2byte_u64ends(ends: Int, values: Int, dst: Int, num_runs: Int):
+    _runend_decode[DType.uint16, DType.uint64, W2](ends, values, dst, num_runs)
+
+@export("vortex_runend_decode_4byte_u64ends")
+fn runend_decode_4byte_u64ends(ends: Int, values: Int, dst: Int, num_runs: Int):
+    _runend_decode[DType.uint32, DType.uint64, W4](ends, values, dst, num_runs)
+
+@export("vortex_runend_decode_8byte_u64ends")
+fn runend_decode_8byte_u64ends(ends: Int, values: Int, dst: Int, num_runs: Int):
+    _runend_decode[DType.uint64, DType.uint64, W8](ends, values, dst, num_runs)

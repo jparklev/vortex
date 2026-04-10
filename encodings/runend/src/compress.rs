@@ -385,67 +385,79 @@ mod test {
 
 #[cfg(vortex_mojo)]
 mod mojo_decode {
-    use std::mem::size_of;
-
     use vortex_array::arrays::PrimitiveArray;
     use vortex_array::arrays::primitive::PrimitiveArrayExt;
     use vortex_array::dtype::PType;
     use vortex_array::match_each_native_ptype;
+    use vortex_array::match_each_unsigned_integer_ptype;
     use vortex_buffer::BufferMut;
     use vortex_error::VortexResult;
 
     unsafe extern "C" {
-        fn vortex_runend_decode_1byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
-        fn vortex_runend_decode_2byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
-        fn vortex_runend_decode_4byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
-        fn vortex_runend_decode_8byte(ends: usize, vals: usize, dst: usize, num_runs: usize);
+        // u32 ends
+        fn vortex_runend_decode_1byte(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_2byte(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_4byte(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_8byte(ends: usize, vals: usize, dst: usize, n: usize);
+        // u64 ends
+        fn vortex_runend_decode_1byte_u64ends(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_2byte_u64ends(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_4byte_u64ends(ends: usize, vals: usize, dst: usize, n: usize);
+        fn vortex_runend_decode_8byte_u64ends(ends: usize, vals: usize, dst: usize, n: usize);
     }
 
     /// Try the Mojo SIMD decode path. Returns `Some` on success, `None` to fall through
-    /// to the generic Rust path (e.g. for nullable values, non-u32 ends, or with offset).
+    /// to the generic Rust path (e.g. for nullable values or with offset).
     pub(super) fn try_mojo_decode(
         ends: &PrimitiveArray,
         values: &PrimitiveArray,
         offset: usize,
         length: usize,
     ) -> VortexResult<Option<PrimitiveArray>> {
-        // Only handle the common fast path: u32 ends, non-nullable, no offset.
-        if ends.ptype() != PType::U32 || offset != 0 || values.dtype().is_nullable() {
+        // Only handle non-nullable, no offset.
+        if offset != 0 || values.dtype().is_nullable() {
             return Ok(None);
         }
 
+        let val_width = values.ptype().byte_width();
+
         let kernel: unsafe extern "C" fn(usize, usize, usize, usize) =
-            match size_of::<u8>().checked_mul(values.ptype().byte_width()) {
-                Some(1) => vortex_runend_decode_1byte,
-                Some(2) => vortex_runend_decode_2byte,
-                Some(4) => vortex_runend_decode_4byte,
-                Some(8) => vortex_runend_decode_8byte,
+            match (ends.ptype(), val_width) {
+                (PType::U32, 1) => vortex_runend_decode_1byte,
+                (PType::U32, 2) => vortex_runend_decode_2byte,
+                (PType::U32, 4) => vortex_runend_decode_4byte,
+                (PType::U32, 8) => vortex_runend_decode_8byte,
+                (PType::U64, 1) => vortex_runend_decode_1byte_u64ends,
+                (PType::U64, 2) => vortex_runend_decode_2byte_u64ends,
+                (PType::U64, 4) => vortex_runend_decode_4byte_u64ends,
+                (PType::U64, 8) => vortex_runend_decode_8byte_u64ends,
                 _ => return Ok(None),
             };
 
-        let ends_slice = ends.as_slice::<u32>();
-        let num_runs = ends_slice.len();
+        match_each_unsigned_integer_ptype!(ends.ptype(), |E| {
+            match_each_native_ptype!(values.ptype(), |T| {
+                let ends_slice = ends.as_slice::<E>();
+                let values_slice: &[T] = values.as_slice();
+                let num_runs = ends_slice.len();
+                let mut buffer = BufferMut::<T>::with_capacity(length);
 
-        match_each_native_ptype!(values.ptype(), |T| {
-            let values_slice: &[T] = values.as_slice();
-            let mut buffer = BufferMut::<T>::with_capacity(length);
+                // SAFETY: The Mojo kernel reads `num_runs` ends and values, writes up to
+                // `length` elements to dst. All buffers are pre-allocated.
+                unsafe {
+                    kernel(
+                        ends_slice.as_ptr() as usize,
+                        values_slice.as_ptr() as usize,
+                        buffer.spare_capacity_mut().as_mut_ptr() as usize,
+                        num_runs,
+                    );
+                    buffer.set_len(length);
+                }
 
-            // SAFETY: The Mojo kernel reads `num_runs` ends and values, writes up to
-            // `length` elements to dst. All buffers are pre-allocated.
-            unsafe {
-                kernel(
-                    ends_slice.as_ptr() as usize,
-                    values_slice.as_ptr() as usize,
-                    buffer.spare_capacity_mut().as_mut_ptr() as usize,
-                    num_runs,
-                );
-                buffer.set_len(length);
-            }
-
-            Ok(Some(PrimitiveArray::new(
-                buffer.freeze(),
-                values.dtype().nullability().into(),
-            )))
+                Ok(Some(PrimitiveArray::new(
+                    buffer.freeze(),
+                    values.dtype().nullability().into(),
+                )))
+            })
         })
     }
 }
