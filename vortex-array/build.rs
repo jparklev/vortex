@@ -34,10 +34,18 @@ fn main() {
     let obj_path = out_dir.join("vortex_mojo_take.o");
 
     // AOT compile the Mojo kernel to a native object file.
+    //
+    // Use MOJO_MCPU to override the target CPU (defaults to "native"). In CI the runner
+    // CPU may differ from the build host, so we allow pinning to a baseline like
+    // "x86-64-v3" (AVX2) to avoid emitting unsupported instructions (e.g. AVX-512).
+    let mcpu = env::var("MOJO_MCPU").unwrap_or_else(|_| "native".to_owned());
+
     let status = Command::new(&mojo_bin)
         .arg("build")
         .arg("--emit")
         .arg("object")
+        .arg("--mcpu")
+        .arg(&mcpu)
         .arg("-o")
         .arg(&obj_path)
         .arg(&kernel_src)

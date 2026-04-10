@@ -751,6 +751,7 @@ jobs:
       - name: Build benchmarks
         env:
           RUSTFLAGS: "-C target-feature=+avx2"
+          MOJO_MCPU: "x86-64-v3"
         run: cargo codspeed build ${{ matrix.features }} $(printf -- '-p %s ' ${{ matrix.packages }}) --profile bench
       - name: Run benchmarks
         uses: CodSpeedHQ/action@d872884a306dd4853acf0f584f4b706cf0cc72a2

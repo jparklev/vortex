@@ -6,7 +6,6 @@
 //! Provides both immutable and mutable (in-place) filtering of typed slices by various mask
 //! representations: indices and ranges (slices).
 
-use std::mem::size_of;
 use std::ptr;
 
 use vortex_buffer::Buffer;
@@ -50,10 +49,10 @@ fn filter_slice_by_indices<T: Copy>(slice: &[T], indices: &[usize]) -> Buffer<T>
 
 #[cfg(vortex_mojo)]
 mod mojo {
+    use std::mem::size_of;
+
     use vortex_buffer::Buffer;
     use vortex_buffer::BufferMut;
-
-    use super::size_of;
 
     unsafe extern "C" {
         fn vortex_filter_1byte(src: usize, idx: usize, dst: usize, n: usize);
