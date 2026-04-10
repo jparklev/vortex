@@ -36,30 +36,22 @@ use crate::validity::Validity;
 // and runtime feature detection to infer the best kernel for the platform.
 static PRIMITIVE_TAKE_KERNEL: LazyLock<&'static dyn TakeImpl> = LazyLock::new(|| {
     cfg_if::cfg_if! {
-        if #[cfg(vortex_nightly)] {
+        if #[cfg(vortex_mojo)] {
+            // Mojo AOT path: 4x-unrolled SIMD gather compiled for the target CPU.
+            // With --mcpu=skylake this generates vpgatherqd and matches hand-written
+            // AVX2 while also working on ARM (NEON) and other platforms.
+            &mojo::TakeKernelMojo
+        } else if #[cfg(vortex_nightly)] {
             // nightly codepath: use portable_simd kernel
             &portable::TakeKernelPortableSimd
         } else if #[cfg(target_arch = "x86_64")] {
-            // stable x86_64 path: use the hand-tuned AVX2 kernel when available (it
-            // outperforms Mojo's generic gather for 32-bit types), falling back to Mojo
-            // when AVX2 is not detected at runtime, then scalar.
+            // stable x86_64 path without Mojo: AVX2 intrinsics when available.
             if is_x86_feature_detected!("avx2") {
                 &avx2::TakeKernelAVX2
-            } else if cfg!(vortex_mojo) {
-                // Mojo AOT path: SIMD gather without AVX2 intrinsics. Useful on
-                // x86_64 hosts that lack AVX2 (rare but possible).
-                #[cfg(vortex_mojo)]
-                { &mojo::TakeKernelMojo }
-                #[cfg(not(vortex_mojo))]
-                { &TakeKernelScalar }
             } else {
                 &TakeKernelScalar
             }
-        } else if #[cfg(vortex_mojo)] {
-            // Non-x86 platforms (e.g. ARM): Mojo auto-selects NEON or other ISA.
-            &mojo::TakeKernelMojo
         } else {
-            // No SIMD available: scalar fallback.
             &TakeKernelScalar
         }
     }
