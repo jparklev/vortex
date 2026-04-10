@@ -166,6 +166,10 @@ name = "take_primitive"
 harness = false
 
 [[bench]]
+name = "take_primitive_simd"
+harness = false
+
+[[bench]]
 name = "take_struct"
 harness = false
 

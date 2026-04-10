@@ -144,6 +144,53 @@ fn take_primitive_scalar<T: NativePType, I: IntegerPType>(
     result.freeze()
 }
 
+// ---------------------------------------------------------------------------
+// Benchmark-visible helpers — expose the raw scalar and Mojo gather kernels
+// with identical signatures so benchmarks can compare them directly.
+// ---------------------------------------------------------------------------
+
+/// Scalar gather: `result[i] = buffer[indices[i]]`. No SIMD.
+#[doc(hidden)]
+pub fn bench_take_scalar<T: NativePType, I: IntegerPType>(
+    buffer: &[T],
+    indices: &[I],
+) -> Buffer<T> {
+    take_primitive_scalar(buffer, indices)
+}
+
+/// AVX2 gather via hand-written intrinsics. Falls back to scalar on non-x86 or when AVX2
+/// is unavailable at runtime.
+#[doc(hidden)]
+pub fn bench_take_avx2<T: NativePType, I: crate::dtype::UnsignedPType>(
+    buffer: &[T],
+    indices: &[I],
+) -> Buffer<T> {
+    #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
+    {
+        if is_x86_feature_detected!("avx2") {
+            // SAFETY: We just checked AVX2 is available.
+            return unsafe { avx2::take_avx2(buffer, indices) };
+        }
+    }
+    take_primitive_scalar(buffer, indices)
+}
+
+/// SIMD gather via the Mojo AOT kernel. Falls back to scalar when Mojo is not available.
+#[doc(hidden)]
+pub fn bench_take_mojo<T: NativePType, I: crate::dtype::UnsignedPType>(
+    buffer: &[T],
+    indices: &[I],
+) -> Buffer<T> {
+    #[cfg(vortex_mojo)]
+    {
+        mojo::take_mojo(buffer, indices)
+    }
+    #[cfg(not(vortex_mojo))]
+    {
+        take_primitive_scalar(buffer, indices)
+    }
+}
+
 #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
 #[cfg(test)]
 mod test {
