@@ -35,9 +35,9 @@ fn main() {
 
     // AOT compile the Mojo kernel to a native object file.
     //
-    // Use MOJO_MCPU to override the target CPU (defaults to "native"). In CI the runner
-    // CPU may differ from the build host, so we allow pinning to a baseline like
-    // "x86-64-v3" (AVX2) to avoid emitting unsupported instructions (e.g. AVX-512).
+    // Use MOJO_MCPU to override the target CPU (defaults to "native"). In CI we pin to
+    // "skylake" which enables hardware gather instructions (vpgatherqd) that are critical
+    // for performance — "x86-64-v3" lacks them and LLVM scalarizes the gather.
     let mcpu = env::var("MOJO_MCPU").unwrap_or_else(|_| "native".to_owned());
 
     // Cargo sets TARGET to e.g. "x86_64-unknown-linux-gnu". Pass it through so Mojo

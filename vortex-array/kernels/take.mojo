@@ -36,7 +36,11 @@ fn _take[VT: DType, IT: DType, W: Int](
     dst_addr: Int,
     count: Int,
 ):
-    """Gather `count` elements: dst[i] = src[indices[i]]."""
+    """Gather `count` elements: dst[i] = src[indices[i]].
+
+    The inner loop is 4x unrolled to keep the CPU's gather pipeline fed with
+    independent loads (critical for throughput on Intel Skylake+ and AMD Zen3+).
+    """
     var _v_anchor: Scalar[VT] = 0
     var _i_anchor: Scalar[IT] = 0
     comptime VP = type_of(UnsafePointer(to=_v_anchor))
@@ -48,11 +52,23 @@ fn _take[VT: DType, IT: DType, W: Int](
 
     var i = 0
 
-    # SIMD gather loop — processes W elements per iteration.
+    # 4x unrolled SIMD gather — keeps gather units saturated with independent
+    # loads for maximum instruction-level parallelism.
+    while i + W * 4 <= count:
+        var g0 = src.gather(idx.load[width=W](i))
+        var g1 = src.gather(idx.load[width=W](i + W))
+        var g2 = src.gather(idx.load[width=W](i + W * 2))
+        var g3 = src.gather(idx.load[width=W](i + W * 3))
+
+        dst.store[width=W](i, g0)
+        dst.store[width=W](i + W, g1)
+        dst.store[width=W](i + W * 2, g2)
+        dst.store[width=W](i + W * 3, g3)
+        i += W * 4
+
+    # Single-vector remainder.
     while i + W <= count:
-        var idx_vec = idx.load[width=W](i).cast[DType.uint64]()
-        var gathered = src.gather(idx_vec)
-        dst.store[width=W](i, gathered)
+        dst.store[width=W](i, src.gather(idx.load[width=W](i)))
         i += W
 
     # Scalar remainder.
