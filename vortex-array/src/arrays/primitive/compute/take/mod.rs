@@ -4,6 +4,9 @@
 #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
 mod avx2;
 
+#[cfg(vortex_mojo)]
+mod mojo;
+
 #[cfg(vortex_nightly)]
 mod portable;
 
@@ -33,7 +36,11 @@ use crate::validity::Validity;
 // and runtime feature detection to infer the best kernel for the platform.
 static PRIMITIVE_TAKE_KERNEL: LazyLock<&'static dyn TakeImpl> = LazyLock::new(|| {
     cfg_if::cfg_if! {
-        if #[cfg(vortex_nightly)] {
+        if #[cfg(vortex_mojo)] {
+            // Mojo AOT path: compiled SIMD kernels linked at build time.
+            // Auto-selects the widest ISA (AVX-512/AVX2/NEON) via Mojo's simdwidthof.
+            &mojo::TakeKernelMojo
+        } else if #[cfg(vortex_nightly)] {
             // nightly codepath: use portable_simd kernel
             &portable::TakeKernelPortableSimd
         } else if #[cfg(target_arch = "x86_64")] {
