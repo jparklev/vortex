@@ -743,6 +743,11 @@ jobs:
         uses: taiki-e/cache-cargo-install-action@66c9585ef5ca780ee69399975a5e911f47905995
         with:
           tool: cargo-codspeed
+      - name: Install Mojo SDK
+        if: contains(matrix.packages, 'vortex-array')
+        run: |
+          pip install --user mojo
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Build benchmarks
         env:
           RUSTFLAGS: "-C target-feature=+avx2"
