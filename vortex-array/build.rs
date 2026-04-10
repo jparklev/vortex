@@ -49,6 +49,8 @@ fn main() {
         .arg("--emit")
         .arg("object")
         .arg("--mcpu")
+        .arg(&mcpu)
+        .arg("--mtune")
         .arg(&mcpu);
 
     if let Some(triple) = &target_triple {
