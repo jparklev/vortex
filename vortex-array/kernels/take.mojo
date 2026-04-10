@@ -143,3 +143,29 @@ fn take_1byte_u32idx(src: Int, idx: Int, dst: Int, n: Int):
 @export("vortex_take_1byte_u64idx")
 fn take_1byte_u64idx(src: Int, idx: Int, dst: Int, n: Int):
     _take[DType.uint8, DType.uint64, W1](src, idx, dst, n)
+
+
+# ---------------------------------------------------------------------------
+# Filter kernels (gather by usize indices from mask)
+#
+# These are used by the primitive filter path when the mask is sparse (<80%
+# selectivity). The Rust side converts the bitmap to a &[usize] index array
+# and passes it here. On x86_64 usize = u64, so these are gathers with
+# u64 element indices.
+# ---------------------------------------------------------------------------
+
+@export("vortex_filter_1byte")
+fn filter_1byte(src: Int, idx: Int, dst: Int, n: Int):
+    _take[DType.uint8, DType.uint64, W1](src, idx, dst, n)
+
+@export("vortex_filter_2byte")
+fn filter_2byte(src: Int, idx: Int, dst: Int, n: Int):
+    _take[DType.uint16, DType.uint64, W2](src, idx, dst, n)
+
+@export("vortex_filter_4byte")
+fn filter_4byte(src: Int, idx: Int, dst: Int, n: Int):
+    _take[DType.uint32, DType.uint64, W4](src, idx, dst, n)
+
+@export("vortex_filter_8byte")
+fn filter_8byte(src: Int, idx: Int, dst: Int, n: Int):
+    _take[DType.uint64, DType.uint64, W8](src, idx, dst, n)
