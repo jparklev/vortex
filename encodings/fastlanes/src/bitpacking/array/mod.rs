@@ -7,7 +7,6 @@ use std::fmt::Formatter;
 use fastlanes::BitPacking;
 use vortex_array::ArrayRef;
 use vortex_array::ExecutionCtx;
-use vortex_array::ToCanonical;
 use vortex_array::TypedArrayRef;
 use vortex_array::array_slots;
 use vortex_array::arrays::Primitive;
@@ -340,7 +339,6 @@ impl<T: TypedArrayRef<crate::BitPacked>> BitPackedArrayExt for T {}
 mod test {
     use vortex_array::IntoArray;
     use vortex_array::LEGACY_SESSION;
-    use vortex_array::ToCanonical;
     use vortex_array::VortexSessionExecute;
     use vortex_array::arrays::PrimitiveArray;
     use vortex_array::assert_arrays_eq;
@@ -398,7 +396,7 @@ mod test {
             .execute::<PrimitiveArray>(&mut ctx)
             .unwrap();
         assert_arrays_eq!(
-            packed_with_patches.as_array().to_primitive(),
+            packed_primitive,
             PrimitiveArray::new(values, Validity::NonNullable)
         );
     }
