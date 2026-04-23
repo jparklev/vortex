@@ -18,6 +18,3 @@ pub struct StringDictScheme;
 mod float;
 mod integer;
 mod string;
-
-pub use float::dictionary_encode as float_dictionary_encode;
-pub use integer::dictionary_encode as integer_dictionary_encode;

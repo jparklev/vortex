@@ -122,7 +122,7 @@ impl<I: core::iter::traits::iterator::Iterator> vortex_buffer::trusted_len::Trus
 
 impl<I> vortex_buffer::trusted_len::TrustedLen for core::iter::adapters::skip::Skip<I> where I: vortex_buffer::trusted_len::TrustedLen
 
-impl<T, U> vortex_buffer::trusted_len::TrustedLen for core::iter::adapters::zip::Zip<T, U> where T: vortex_buffer::trusted_len::TrustedLen, U: vortex_buffer::trusted_len::TrustedLen
+impl<T, U> vortex_buffer::trusted_len::TrustedLen for core::iter::adapters::zip::Zip<T, U> where T: vortex_buffer::trusted_len::TrustedLen, U: core::iter::traits::iterator::Iterator
 
 impl<T, const N: usize> vortex_buffer::trusted_len::TrustedLen for core::array::iter::IntoIter<T, N>
 

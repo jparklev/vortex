@@ -95,7 +95,7 @@ impl Scheme for FSSTScheme {
             .uncompressed_lengths()
             .clone()
             .execute::<PrimitiveArray>(exec_ctx)?
-            .narrow()?;
+            .narrow(exec_ctx)?;
         let compressed_original_lengths = compressor.compress_child(
             &uncompressed_lengths_primitive.into_array(),
             &compress_ctx,
@@ -109,7 +109,7 @@ impl Scheme for FSSTScheme {
             .offsets()
             .clone()
             .execute::<PrimitiveArray>(exec_ctx)?
-            .narrow()?;
+            .narrow(exec_ctx)?;
         let compressed_codes_offsets = compressor.compress_child(
             &codes_offsets_primitive.into_array(),
             &compress_ctx,
@@ -206,7 +206,7 @@ impl Scheme for NullDominatedSparseScheme {
                 .indices()
                 .clone()
                 .execute::<PrimitiveArray>(exec_ctx)?
-                .narrow()?;
+                .narrow(exec_ctx)?;
             let compressed_indices = compressor.compress_child(
                 &indices.into_array(),
                 &compress_ctx,

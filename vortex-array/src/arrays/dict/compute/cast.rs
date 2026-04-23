@@ -46,13 +46,18 @@ impl CastReduce for Dict {
 
 #[cfg(test)]
 mod tests {
+    use std::sync::LazyLock;
+
     use rstest::rstest;
     use vortex_buffer::buffer;
+    use vortex_session::VortexSession;
 
     use crate::IntoArray;
     #[expect(deprecated)]
     use crate::ToCanonical as _;
+    use crate::VortexSessionExecute;
     use crate::arrays::Dict;
+    use crate::arrays::DictArray;
     use crate::arrays::PrimitiveArray;
     use crate::arrays::dict::DictArraySlotsExt;
     use crate::assert_arrays_eq;
@@ -62,11 +67,19 @@ mod tests {
     use crate::dtype::DType;
     use crate::dtype::Nullability;
     use crate::dtype::PType;
+    use crate::session::ArraySession;
+
+    static SESSION: LazyLock<VortexSession> =
+        LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
+
+    fn encode_dict(array: &crate::ArrayRef) -> DictArray {
+        dict_encode(array, &mut SESSION.create_execution_ctx()).unwrap()
+    }
 
     #[test]
     fn test_cast_dict_to_wider_type() {
         let values = buffer![1i32, 2, 3, 2, 1].into_array();
-        let dict = dict_encode(&values).unwrap();
+        let dict = encode_dict(&values);
 
         let casted = dict
             .into_array()
@@ -86,7 +99,7 @@ mod tests {
     fn test_cast_dict_nullable() {
         let values =
             PrimitiveArray::from_option_iter([Some(10i32), None, Some(20), Some(10), None]);
-        let dict = dict_encode(&values.into_array()).unwrap();
+        let dict = encode_dict(&values.into_array());
 
         let casted = dict
             .into_array()
@@ -102,7 +115,7 @@ mod tests {
     fn test_cast_dict_allvalid_to_nonnullable_and_back() {
         // Create an AllValid dict array (no nulls)
         let values = buffer![10i32, 20, 30, 40].into_array();
-        let dict = dict_encode(&values).unwrap();
+        let dict = encode_dict(&values);
 
         // Verify initial state - codes should be NonNullable, values should be NonNullable
         assert_eq!(dict.codes().dtype().nullability(), Nullability::NonNullable);
@@ -171,10 +184,10 @@ mod tests {
     }
 
     #[rstest]
-    #[case(dict_encode(&buffer![1i32, 2, 3, 2, 1, 3].into_array()).unwrap().into_array())]
-    #[case(dict_encode(&buffer![100u32, 200, 100, 300, 200].into_array()).unwrap().into_array())]
-    #[case(dict_encode(&PrimitiveArray::from_option_iter([Some(1i32), None, Some(2), Some(1), None]).into_array()).unwrap().into_array())]
-    #[case(dict_encode(&buffer![1.5f32, 2.5, 1.5, 3.5].into_array()).unwrap().into_array())]
+    #[case(encode_dict(&buffer![1i32, 2, 3, 2, 1, 3].into_array()).into_array())]
+    #[case(encode_dict(&buffer![100u32, 200, 100, 300, 200].into_array()).into_array())]
+    #[case(encode_dict(&PrimitiveArray::from_option_iter([Some(1i32), None, Some(2), Some(1), None]).into_array()).into_array())]
+    #[case(encode_dict(&buffer![1.5f32, 2.5, 1.5, 3.5].into_array()).into_array())]
     fn test_cast_dict_conformance(#[case] array: crate::ArrayRef) {
         test_cast_conformance(&array);
     }

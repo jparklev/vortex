@@ -268,10 +268,6 @@ pub fn vortex_compressor::builtins::StringDictScheme::scheme_name(&self) -> &'st
 
 pub fn vortex_compressor::builtins::StringDictScheme::stats_options(&self) -> vortex_compressor::stats::GenerateStatsOptions
 
-pub fn vortex_compressor::builtins::float_dictionary_encode(vortex_array::array::view::ArrayView<'_, vortex_array::arrays::primitive::vtable::Primitive>, &vortex_compressor::stats::FloatStats) -> vortex_error::VortexResult<vortex_array::arrays::dict::vtable::DictArray>
-
-pub fn vortex_compressor::builtins::integer_dictionary_encode(vortex_array::array::view::ArrayView<'_, vortex_array::arrays::primitive::vtable::Primitive>, &vortex_compressor::stats::IntegerStats) -> vortex_error::VortexResult<vortex_array::arrays::dict::vtable::DictArray>
-
 pub fn vortex_compressor::builtins::is_float_primitive(&vortex_array::canonical::Canonical) -> bool
 
 pub fn vortex_compressor::builtins::is_integer_primitive(&vortex_array::canonical::Canonical) -> bool
@@ -754,10 +750,6 @@ pub fn vortex_compressor::stats::BoolStats::fmt(&self, &mut core::fmt::Formatter
 
 pub struct vortex_compressor::stats::FloatDistinctInfo<T>
 
-impl<T> vortex_compressor::stats::FloatDistinctInfo<T>
-
-pub fn vortex_compressor::stats::FloatDistinctInfo<T>::distinct_values(&self) -> &vortex_utils::aliases::hash_set::HashSet<vortex_array::arrays::primitive::native_value::NativeValue<T>, rustc_hash::FxBuildHasher>
-
 impl<T: core::clone::Clone> core::clone::Clone for vortex_compressor::stats::FloatDistinctInfo<T>
 
 pub fn vortex_compressor::stats::FloatDistinctInfo<T>::clone(&self) -> vortex_compressor::stats::FloatDistinctInfo<T>
@@ -843,10 +835,6 @@ pub fn vortex_compressor::stats::GenerateStatsOptions::fmt(&self, &mut core::fmt
 impl core::marker::Copy for vortex_compressor::stats::GenerateStatsOptions
 
 pub struct vortex_compressor::stats::IntegerDistinctInfo<T>
-
-impl<T> vortex_compressor::stats::IntegerDistinctInfo<T>
-
-pub fn vortex_compressor::stats::IntegerDistinctInfo<T>::distinct_values(&self) -> &vortex_utils::aliases::hash_map::HashMap<vortex_array::arrays::primitive::native_value::NativeValue<T>, u32, rustc_hash::FxBuildHasher>
 
 impl<T: core::clone::Clone> core::clone::Clone for vortex_compressor::stats::IntegerDistinctInfo<T>
 

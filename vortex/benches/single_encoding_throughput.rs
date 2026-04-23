@@ -213,16 +213,21 @@ fn bench_for_decompress_i32(bencher: Bencher) {
 #[divan::bench(name = "dict_compress_u32")]
 fn bench_dict_compress_u32(bencher: Bencher) {
     let (uint_array, ..) = setup_primitive_arrays();
+    let array = uint_array.into_array();
 
     with_byte_counter(bencher, NUM_VALUES * 4)
-        .with_inputs(|| &uint_array)
-        .bench_refs(|a| dict_encode(&a.clone().into_array()).unwrap());
+        .with_inputs(|| (&array, SESSION.create_execution_ctx()))
+        .bench_refs(|(a, ctx)| dict_encode(a, ctx).unwrap());
 }
 
 #[divan::bench(name = "dict_decompress_u32")]
 fn bench_dict_decompress_u32(bencher: Bencher) {
     let (uint_array, ..) = setup_primitive_arrays();
-    let compressed = dict_encode(&uint_array.into_array()).unwrap();
+    let compressed = dict_encode(
+        &uint_array.into_array(),
+        &mut SESSION.create_execution_ctx(),
+    )
+    .unwrap();
 
     with_byte_counter(bencher, NUM_VALUES * 4)
         .with_inputs(|| (&compressed, SESSION.create_execution_ctx()))
@@ -393,17 +398,22 @@ fn bench_dict_compress_string(bencher: Bencher) {
     let varbinview_arr =
         VarBinViewArray::from_iter_str(gen_varbin_words(NUM_VALUES as usize, 0.00005));
     let nbytes = varbinview_arr.nbytes() as u64;
+    let array = varbinview_arr.into_array();
 
     with_byte_counter(bencher, nbytes)
-        .with_inputs(|| &varbinview_arr)
-        .bench_refs(|a| dict_encode(&a.clone().into_array()).unwrap());
+        .with_inputs(|| (&array, SESSION.create_execution_ctx()))
+        .bench_refs(|(a, ctx)| dict_encode(a, ctx).unwrap());
 }
 
 #[divan::bench(name = "dict_decompress_string")]
 fn bench_dict_decompress_string(bencher: Bencher) {
     let varbinview_arr =
         VarBinViewArray::from_iter_str(gen_varbin_words(NUM_VALUES as usize, 0.00005));
-    let dict = dict_encode(&varbinview_arr.clone().into_array()).unwrap();
+    let dict = dict_encode(
+        &varbinview_arr.clone().into_array(),
+        &mut SESSION.create_execution_ctx(),
+    )
+    .unwrap();
     let nbytes = varbinview_arr.into_array().nbytes() as u64;
 
     with_byte_counter(bencher, nbytes)

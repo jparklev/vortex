@@ -3,16 +3,16 @@
 
 use bytes::bytes_dict_builder;
 use primitive::primitive_dict_builder;
+use vortex_array::ExecutionCtx;
 use vortex_error::VortexResult;
 use vortex_error::vortex_bail;
 use vortex_error::vortex_panic;
 
 use crate::ArrayRef;
 use crate::IntoArray;
-#[expect(deprecated)]
-use crate::ToCanonical as _;
 use crate::arrays::DictArray;
 use crate::arrays::Primitive;
+use crate::arrays::PrimitiveArray;
 use crate::arrays::VarBin;
 use crate::arrays::VarBinView;
 use crate::arrays::primitive::PrimitiveArrayExt;
@@ -35,7 +35,7 @@ pub const UNCONSTRAINED: DictConstraints = DictConstraints {
 
 pub trait DictEncoder: Send {
     /// Assign dictionary codes to the given input array.
-    fn encode(&mut self, array: &ArrayRef) -> ArrayRef;
+    fn encode(&mut self, array: &ArrayRef, ctx: &mut ExecutionCtx) -> VortexResult<PrimitiveArray>;
 
     /// Clear the encoder state to make it ready for a new round of decoding.
     fn reset(&mut self) -> ArrayRef;
@@ -65,11 +65,10 @@ pub fn dict_encoder(array: &ArrayRef, constraints: &DictConstraints) -> Box<dyn 
 pub fn dict_encode_with_constraints(
     array: &ArrayRef,
     constraints: &DictConstraints,
+    ctx: &mut ExecutionCtx,
 ) -> VortexResult<DictArray> {
     let mut encoder = dict_encoder(array, constraints);
-    let encoded = encoder.encode(array);
-    #[expect(deprecated)]
-    let codes = encoded.to_primitive().narrow()?;
+    let codes = encoder.encode(array, ctx)?.narrow(ctx)?;
     // SAFETY: The encoding process will produce a value set of codes and values
     // All values in the dictionary are guaranteed to be referenced by at least one code
     // since we build the dictionary from the codes we observe during encoding
@@ -81,8 +80,8 @@ pub fn dict_encode_with_constraints(
     }
 }
 
-pub fn dict_encode(array: &ArrayRef) -> VortexResult<DictArray> {
-    let dict_array = dict_encode_with_constraints(array, &UNCONSTRAINED)?;
+pub fn dict_encode(array: &ArrayRef, ctx: &mut ExecutionCtx) -> VortexResult<DictArray> {
+    let dict_array = dict_encode_with_constraints(array, &UNCONSTRAINED, ctx)?;
     if dict_array.len() != array.len() {
         vortex_bail!(
             "must have encoded all {} elements, but only encoded {}",
