@@ -263,6 +263,19 @@ void function(ClientContext &, TableFunctionInput &input, DataChunk &output) {
     }
 }
 
+/*
+ * Table filter pushdown is used twice in duckdb:
+ *
+ * 1. Planning time: duckdb uses file metadata (filename, hive_partitioning
+ * options in MultiFileReader) to prune files based on filename or hive
+ * partition data i.e. month, year, etc. This happens before any file IO.
+ * We don't use this because we have own file-level pruning in
+ * FileStatsLayoutReader.
+ *
+ * 2. Scan time. As we have filter_pushdown = true, filter expressions are
+ * converted to TableFilterSet and pushed down to Vortex. We convert them to
+ * vortex expressions and use as filter options while initializing the scan.
+ */
 void c_pushdown_complex_filter(ClientContext &,
                                LogicalGet &,
                                FunctionData *bind_data,
@@ -278,8 +291,6 @@ void c_pushdown_complex_filter(ClientContext &,
         if (error_out) {
             throw BinderException(IntoErrString(error_out));
         }
-
-        // If the pushdown complex filter returns true, we can remove the filter from the list.
         iter = pushed ? filters.erase(iter) : std::next(iter);
     }
 }
@@ -415,6 +426,10 @@ extern "C" duckdb_state duckdb_vx_tfunc_register(duckdb_database ffi_db, const d
             {COLUMN_IDENTIFIER_FILE_INDEX, {"file_index", LogicalType::UBIGINT}},
             {COLUMN_IDENTIFIER_FILE_ROW_NUMBER, {"file_row_number", LogicalType::BIGINT}},
         };
+    };
+
+    tf.pushdown_expression = [](auto &, auto &, auto &) {
+        return true;
     };
 
     tf.arguments.resize(vtab->parameter_count);
