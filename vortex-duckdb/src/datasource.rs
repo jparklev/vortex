@@ -51,6 +51,7 @@ use vortex::scalar_fn::fns::pack::Pack;
 use vortex::scan::DataSource;
 use vortex::scan::ScanRequest;
 use vortex_utils::aliases::hash_set::HashSet;
+use vortex_utils::parallelism::get_available_parallelism;
 
 use crate::RUNTIME;
 use crate::SESSION;
@@ -304,9 +305,7 @@ impl<T: DataSourceTableFunction> TableFunction for T {
 
         let scan = RUNTIME.block_on(bind_data.data_source.scan(request))?;
 
-        let num_workers = std::thread::available_parallelism()
-            .map(|n| n.get())
-            .unwrap_or(1);
+        let num_workers = get_available_parallelism().unwrap_or(1);
 
         // We create an async bounded channel so that all thread-local workers can pull the next
         // available array chunk regardless of which partition it came from.
@@ -400,7 +399,7 @@ impl<T: DataSourceTableFunction> TableFunction for T {
                     return Ok(());
                 };
                 let (array_result, conversion_cache) = result?;
-                let array_result = array_result.optimize_recursive()?;
+                let array_result = array_result.optimize_recursive(ctx.session())?;
 
                 let array_result: StructArray = if let Some(array) = array_result.as_opt::<Struct>()
                 {
