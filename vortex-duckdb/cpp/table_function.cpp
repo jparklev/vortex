@@ -94,13 +94,52 @@ static Value &UnwrapValue(duckdb_value value) {
     return *(reinterpret_cast<Value *>(value));
 }
 
+// For boolean or integral types, derive distinct count from min/max pair.
+idx_t integer_distinct(LogicalTypeId id, const Value &min, const Value &max) {
+    switch (id) {
+    case LogicalTypeId::BOOLEAN:
+        return 1 + max.GetValueUnsafe<bool>() - min.GetValueUnsafe<bool>();
+    case LogicalTypeId::UTINYINT:
+        return 1 + max.GetValueUnsafe<uint8_t>() - min.GetValueUnsafe<uint8_t>();
+    case LogicalTypeId::USMALLINT:
+        return 1 + max.GetValueUnsafe<uint16_t>() - min.GetValueUnsafe<uint16_t>();
+    case LogicalTypeId::UINTEGER:
+        return 1 + max.GetValueUnsafe<uint32_t>() - min.GetValueUnsafe<uint32_t>();
+    case LogicalTypeId::UBIGINT:
+        return 1 + max.GetValueUnsafe<uint64_t>() - min.GetValueUnsafe<uint64_t>();
+    case LogicalTypeId::TINYINT:
+        return 1 + abs(max.GetValueUnsafe<int8_t>() - min.GetValueUnsafe<int8_t>());
+    case LogicalTypeId::SMALLINT:
+        return 1 + abs(max.GetValueUnsafe<int16_t>() - min.GetValueUnsafe<int16_t>());
+    case LogicalTypeId::INTEGER:
+        return 1 + labs(max.GetValueUnsafe<int32_t>() - min.GetValueUnsafe<int32_t>());
+    case LogicalTypeId::BIGINT:
+        return 1 + llabs(max.GetValueUnsafe<int64_t>() - min.GetValueUnsafe<int64_t>());
+    // Don't estimate distinct for huge ints since result may not fit in u64.
+    default:
+        return 0;
+    }
+}
+
 unique_ptr<BaseStatistics> numeric_stats(duckdb_column_statistics &stats, LogicalType type) {
     BaseStatistics out = StringStats::CreateUnknown(type);
-    if (stats.min) {
+    if (stats.min && stats.max) {
+        const Value &min = UnwrapValue(stats.min);
+        NumericStats::SetMin(out, min);
+
+        const Value &max = UnwrapValue(stats.max);
+        NumericStats::SetMax(out, max);
+
+        if (const idx_t distinct = integer_distinct(type.id(), min, max); distinct > 0) {
+            out.SetDistinctCount(distinct);
+        }
+
+        duckdb_destroy_value(&stats.min);
+        duckdb_destroy_value(&stats.max);
+    } else if (stats.min) {
         NumericStats::SetMin(out, UnwrapValue(stats.min));
         duckdb_destroy_value(&stats.min);
-    }
-    if (stats.max) {
+    } else if (stats.max) {
         NumericStats::SetMax(out, UnwrapValue(stats.max));
         duckdb_destroy_value(&stats.max);
     }
@@ -112,14 +151,26 @@ unique_ptr<BaseStatistics> numeric_stats(duckdb_column_statistics &stats, Logica
 
 unique_ptr<BaseStatistics> string_stats(duckdb_column_statistics &stats, LogicalType type) {
     BaseStatistics out = StringStats::CreateUnknown(type);
-    if (stats.min) {
+    if (stats.min && stats.max) {
+        const std::string &min = StringValue::Get(UnwrapValue(stats.min));
+        StringStats::SetMin(out, min);
+        duckdb_destroy_value(&stats.min);
+
+        const std::string &max = StringValue::Get(UnwrapValue(stats.max));
+        StringStats::SetMax(out, max);
+        duckdb_destroy_value(&stats.max);
+
+        if (min == max) {
+            out.SetDistinctCount(1);
+        }
+    } else if (stats.min) {
         StringStats::SetMin(out, StringValue::Get(UnwrapValue(stats.min)));
         duckdb_destroy_value(&stats.min);
-    }
-    if (stats.max) {
+    } else if (stats.max) {
         StringStats::SetMax(out, StringValue::Get(UnwrapValue(stats.max)));
         duckdb_destroy_value(&stats.max);
     }
+
     if (stats.max_string_length >> 63) {
         StringStats::SetMaxStringLength(out, uint32_t(stats.max_string_length));
     }
