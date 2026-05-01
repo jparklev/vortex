@@ -12,6 +12,7 @@ use crate::Executable;
 use crate::ExecutionCtx;
 use crate::IntoArray;
 use crate::array::ArrayView;
+use crate::array::ParentRef;
 use crate::arrays::Constant;
 use crate::arrays::ConstantArray;
 use crate::dtype::DType;
@@ -93,11 +94,15 @@ pub struct AnyColumnar;
 impl Matcher for AnyColumnar {
     type Match<'a> = ColumnarView<'a>;
 
-    fn try_match(array: &ArrayRef) -> Option<Self::Match<'_>> {
-        if let Some(constant) = array.as_opt::<Constant>() {
+    fn matches_parent(parent: &ParentRef<'_>) -> bool {
+        Constant::matches_parent(parent) || AnyCanonical::matches_parent(parent)
+    }
+
+    fn try_match_parent<'a>(parent: &ParentRef<'a>) -> Option<Self::Match<'a>> {
+        if let Some(constant) = parent.try_array_view::<Constant>() {
             Some(ColumnarView::Constant(constant))
         } else {
-            array.as_opt::<AnyCanonical>().map(ColumnarView::Canonical)
+            AnyCanonical::try_match_parent(parent).map(ColumnarView::Canonical)
         }
     }
 }

@@ -40,7 +40,7 @@ pub fn vortex_bytebool::ByteBool::id(&self) -> vortex_array::array::ArrayId
 
 pub fn vortex_bytebool::ByteBool::nbuffers(vortex_array::array::view::ArrayView<'_, Self>) -> usize
 
-pub fn vortex_bytebool::ByteBool::reduce_parent(vortex_array::array::view::ArrayView<'_, Self>, &vortex_array::array::erased::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::array::erased::ArrayRef>>
+pub fn vortex_bytebool::ByteBool::reduce_parent(vortex_array::array::view::ArrayView<'_, Self>, &vortex_array::array::parent::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::array::erased::ArrayRef>>
 
 pub fn vortex_bytebool::ByteBool::serialize(vortex_array::array::view::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 

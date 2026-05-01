@@ -233,12 +233,19 @@ impl Array<Dict> {
 
     /// Build a new `DictArray` from its components, `codes` and `values`.
     pub fn try_new(codes: ArrayRef, values: ArrayRef) -> VortexResult<Self> {
+        Array::try_from_parts(Self::try_new_parts(codes, values)?)
+    }
+
+    /// Build the [`ArrayParts<Dict>`]. The parts can then be optimized through
+    /// [`ParentRef::optimize`](crate::array::ParentRef::optimize) or materialized
+    /// directly with [`ArrayParts::into_array`].
+    pub fn try_new_parts(codes: ArrayRef, values: ArrayRef) -> VortexResult<ArrayParts<Dict>> {
         let dtype = values
             .dtype()
             .union_nullability(codes.dtype().nullability());
         let len = codes.len();
         let data = DictData::try_new(codes.dtype())?;
-        Array::try_from_parts(
+        Ok(
             ArrayParts::new(Dict, dtype, len, data)
                 .with_slots(smallvec![Some(codes), Some(values)]),
         )
@@ -293,6 +300,8 @@ impl Array<Dict> {
 
 #[cfg(test)]
 mod test {
+    use std::sync::LazyLock;
+
     use rand::RngExt;
     use rand::SeedableRng;
     use rand::distr::Distribution;
@@ -304,12 +313,10 @@ mod test {
     use vortex_error::VortexResult;
     use vortex_error::vortex_panic;
     use vortex_mask::AllOr;
+    use vortex_session::VortexSession;
 
     use crate::ArrayRef;
     use crate::IntoArray;
-    use crate::LEGACY_SESSION;
-    #[expect(deprecated)]
-    use crate::ToCanonical as _;
     use crate::VortexSessionExecute;
     use crate::arrays::ChunkedArray;
     use crate::arrays::DictArray;
@@ -321,7 +328,11 @@ mod test {
     use crate::dtype::Nullability::NonNullable;
     use crate::dtype::PType;
     use crate::dtype::UnsignedPType;
+    use crate::session::ArraySession;
     use crate::validity::Validity;
+
+    static SESSION: LazyLock<VortexSession> =
+        LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
 
     #[test]
     fn nullable_codes_validity() {
@@ -338,10 +349,7 @@ mod test {
             .as_ref()
             .validity()
             .unwrap()
-            .execute_mask(
-                dict.as_ref().len(),
-                &mut LEGACY_SESSION.create_execution_ctx(),
-            )
+            .execute_mask(dict.as_ref().len(), &mut SESSION.create_execution_ctx())
             .unwrap();
         let AllOr::Some(indices) = mask.indices() else {
             vortex_panic!("Expected indices from mask")
@@ -364,10 +372,7 @@ mod test {
             .as_ref()
             .validity()
             .unwrap()
-            .execute_mask(
-                dict.as_ref().len(),
-                &mut LEGACY_SESSION.create_execution_ctx(),
-            )
+            .execute_mask(dict.as_ref().len(), &mut SESSION.create_execution_ctx())
             .unwrap();
         let AllOr::Some(indices) = mask.indices() else {
             vortex_panic!("Expected indices from mask")
@@ -394,10 +399,7 @@ mod test {
             .as_ref()
             .validity()
             .unwrap()
-            .execute_mask(
-                dict.as_ref().len(),
-                &mut LEGACY_SESSION.create_execution_ctx(),
-            )
+            .execute_mask(dict.as_ref().len(), &mut SESSION.create_execution_ctx())
             .unwrap();
         let AllOr::Some(indices) = mask.indices() else {
             vortex_panic!("Expected indices from mask")
@@ -420,10 +422,7 @@ mod test {
             .as_ref()
             .validity()
             .unwrap()
-            .execute_mask(
-                dict.as_ref().len(),
-                &mut LEGACY_SESSION.create_execution_ctx(),
-            )
+            .execute_mask(dict.as_ref().len(), &mut SESSION.create_execution_ctx())
             .unwrap();
         let AllOr::Some(indices) = mask.indices() else {
             vortex_panic!("Expected indices from mask")
@@ -470,10 +469,9 @@ mod test {
             &DType::Primitive(PType::U64, NonNullable),
             len * chunk_count,
         );
-        array.append_to_builder(builder.as_mut(), &mut LEGACY_SESSION.create_execution_ctx())?;
+        array.append_to_builder(builder.as_mut(), &mut SESSION.create_execution_ctx())?;
 
-        #[expect(deprecated)]
-        let into_prim = array.to_primitive();
+        let into_prim = array.execute::<PrimitiveArray>(&mut SESSION.create_execution_ctx())?;
         let prim_into = builder.finish_into_canonical().into_primitive();
 
         assert_arrays_eq!(into_prim, prim_into);

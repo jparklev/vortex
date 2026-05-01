@@ -31,6 +31,7 @@ use std::sync::Arc;
 use std::sync::LazyLock;
 
 use arc_swap::ArcSwap;
+use vortex_array::arrays::Struct;
 use vortex_error::VortexResult;
 use vortex_session::Ref;
 use vortex_session::SessionExt;
@@ -39,13 +40,13 @@ use vortex_session::registry::Id;
 use vortex_utils::aliases::DefaultHashBuilder;
 use vortex_utils::aliases::hash_map::HashMap;
 
+use crate::ArrayPlugin;
 use crate::ArrayRef;
 use crate::ExecutionCtx;
-use crate::array::VTable;
-use crate::arrays::Struct;
+use crate::array::ParentRef;
 use crate::arrays::struct_::compute::cast::struct_cast_execute_parent;
 use crate::arrays::struct_::compute::rules::struct_cast_reduce_parent;
-use crate::scalar_fn::ScalarFnVTable;
+use crate::scalar_fn::ScalarFnPlugin;
 use crate::scalar_fn::fns::cast::Cast;
 
 /// Shared hasher used to combine `(outer, child)` tuples into registry keys.
@@ -59,8 +60,11 @@ static FN_HASHER: LazyLock<DefaultHashBuilder> = LazyLock::new(DefaultHashBuilde
 ///
 /// Implementations must preserve the parent's logical length and dtype, matching the invariant
 /// required of static parent-reduce rules.
-pub type ReduceParentFn =
-    fn(child: &ArrayRef, parent: &ArrayRef, child_idx: usize) -> VortexResult<Option<ArrayRef>>;
+pub type ReduceParentFn = fn(
+    child: &ArrayRef,
+    parent: &ParentRef<'_>,
+    child_idx: usize,
+) -> VortexResult<Option<ArrayRef>>;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Ord, PartialOrd)]
 #[repr(transparent)]
@@ -88,7 +92,7 @@ impl Borrow<u64> for ReduceParentFnId {
 /// required of static `execute_parent` kernels.
 pub type ExecuteParentFn = fn(
     child: &ArrayRef,
-    parent: &ArrayRef,
+    parent: &ParentRef<'_>,
     child_idx: usize,
     ctx: &mut ExecutionCtx,
 ) -> VortexResult<Option<ArrayRef>>;

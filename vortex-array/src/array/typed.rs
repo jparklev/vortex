@@ -70,6 +70,15 @@ impl<V: VTable> ArrayParts<V> {
         self.slots = slots;
         self
     }
+
+    /// Materialize already-valid parts into an [`ArrayRef`] without attempting reduction.
+    ///
+    /// This intentionally skips vtable validation. Use
+    /// `Array::<V>::try_from_parts(parts)?.into_array()` when constructing parts from unchecked
+    /// inputs.
+    pub fn into_array(self) -> ArrayRef {
+        unsafe { Array::<V>::from_parts_unchecked(self).into_array() }
+    }
 }
 
 /// Shared bound for helpers that should work over both owned [`Array<V>`] and borrowed

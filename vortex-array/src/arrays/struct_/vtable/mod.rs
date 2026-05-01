@@ -15,6 +15,7 @@ use crate::ExecutionResult;
 use crate::array::Array;
 use crate::array::ArrayView;
 use crate::array::EmptyArrayData;
+use crate::array::ParentRef;
 use crate::array::VTable;
 use crate::array::child_to_validity;
 use crate::arrays::struct_::array::FIELDS_OFFSET;
@@ -41,6 +42,7 @@ impl VTable for Struct {
 
     type OperationsVTable = Self;
     type ValidityVTable = Self;
+
     fn id(&self) -> ArrayId {
         static ID: CachedId = CachedId::new("vortex.struct");
         *ID
@@ -189,7 +191,7 @@ impl VTable for Struct {
 
     fn reduce_parent(
         array: ArrayView<'_, Self>,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>> {
         PARENT_RULES.evaluate(array, parent, child_idx)

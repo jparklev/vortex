@@ -31,6 +31,7 @@ use crate::ArrayRef;
 use crate::Canonical;
 use crate::IntoArray;
 use crate::array::ArrayId;
+use crate::array::ParentRef;
 use crate::builders::ArrayBuilder;
 use crate::builders::builder_with_capacity_in;
 use crate::dtype::DType;
@@ -406,9 +407,10 @@ impl Executable for ArrayRef {
             return Ok(reduced);
         }
 
+        let parent_ref = ParentRef::from_array_ref(&array);
         for (slot_idx, slot) in array.slots().iter().enumerate() {
             let Some(child) = slot else { continue };
-            if let Some(reduced_parent) = child.reduce_parent(&array, slot_idx)? {
+            if let Some(reduced_parent) = child.reduce_parent(&parent_ref, slot_idx)? {
                 ctx.log(format_args!(
                     "reduce_parent: slot[{}]({}) rewrote {} -> {}",
                     slot_idx,
@@ -546,8 +548,9 @@ fn execute_parent_for_child(
         && let Some(plugins) =
             kernels.find_execute_parent(parent.encoding_id(), child.encoding_id())
     {
+        let parent_ref = ParentRef::from_array_ref(parent);
         for plugin in plugins.as_ref() {
-            if let Some(result) = plugin(child, parent, slot_idx, ctx)? {
+            if let Some(result) = plugin(child, &parent_ref, slot_idx, ctx)? {
                 return Ok(Some(result));
             }
         }

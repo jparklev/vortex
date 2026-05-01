@@ -34,6 +34,9 @@ pub use plugin::*;
 mod foreign;
 pub(crate) use foreign::*;
 
+mod parent;
+pub use parent::*;
+
 mod typed;
 pub use typed::*;
 
@@ -148,7 +151,7 @@ pub(crate) trait DynArrayData: 'static + private::Sealed + Send + Sync + Debug {
     fn reduce_parent(
         &self,
         this: &ArrayRef,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>>;
 
@@ -410,7 +413,7 @@ impl<V: VTable> DynArrayData for ArrayData<V> {
     fn reduce_parent(
         &self,
         this: &ArrayRef,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>> {
         let view = unsafe { ArrayView::new_unchecked(this, &self.data) };

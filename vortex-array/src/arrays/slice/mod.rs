@@ -26,6 +26,7 @@ use crate::Canonical;
 use crate::ExecutionCtx;
 use crate::IntoArray;
 use crate::array::ArrayView;
+use crate::array::ParentRef;
 use crate::array::VTable;
 use crate::kernel::ExecuteParentKernel;
 use crate::matcher::Matcher;
@@ -95,6 +96,25 @@ where
             return Ok(Some(result));
         }
         <V as SliceReduce>::slice(array, parent.range.clone())
+    }
+
+    /// Override the default `try_match_parent`-driven dispatch so a `SliceArray` parent
+    /// borrowed from [`ArrayParts`](crate::array::ArrayParts) can drive reduction
+    /// without first allocating an `Arc<ArrayInner<Slice>>`.
+    fn reduce_parent_ref(
+        &self,
+        array: ArrayView<'_, V>,
+        parent: &ParentRef<'_>,
+        child_idx: usize,
+    ) -> VortexResult<Option<ArrayRef>> {
+        assert_eq!(child_idx, 0);
+        let Some(parent_view) = parent.try_view::<Slice>() else {
+            return Ok(None);
+        };
+        if let Some(result) = precondition::<V>(array, &parent_view.range) {
+            return Ok(Some(result));
+        }
+        <V as SliceReduce>::slice(array, parent_view.range.clone())
     }
 }
 

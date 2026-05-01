@@ -26,6 +26,7 @@ use crate::array::Array;
 use crate::array::ArrayId;
 use crate::array::ArrayParts;
 use crate::array::ArrayView;
+use crate::array::ParentRef;
 use crate::array::VTable;
 use crate::arrays::scalar_fn::array::ScalarFnArrayExt;
 use crate::arrays::scalar_fn::array::ScalarFnData;
@@ -159,7 +160,7 @@ impl VTable for ScalarFn {
 
     fn reduce_parent(
         array: ArrayView<'_, Self>,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>> {
         PARENT_RULES.evaluate(array, parent, child_idx)
@@ -206,12 +207,12 @@ pub struct AnyScalarFn;
 impl Matcher for AnyScalarFn {
     type Match<'a> = ArrayView<'a, ScalarFn>;
 
-    fn matches(array: &ArrayRef) -> bool {
-        array.is::<ScalarFn>()
+    fn matches_parent(parent: &ParentRef<'_>) -> bool {
+        ScalarFn::matches_parent(parent)
     }
 
-    fn try_match(array: &ArrayRef) -> Option<Self::Match<'_>> {
-        array.as_opt::<ScalarFn>()
+    fn try_match_parent<'a>(parent: &ParentRef<'a>) -> Option<Self::Match<'a>> {
+        parent.try_array_view::<ScalarFn>()
     }
 }
 
@@ -222,20 +223,18 @@ pub struct ExactScalarFn<F: scalar_fn::ScalarFnVTable>(PhantomData<F>);
 impl<F: scalar_fn::ScalarFnVTable> Matcher for ExactScalarFn<F> {
     type Match<'a> = ScalarFnArrayView<'a, F>;
 
-    fn matches(array: &ArrayRef) -> bool {
-        if let Some(scalar_fn_array) = array.as_opt::<ScalarFn>() {
-            scalar_fn_array.data().scalar_fn().is::<F>()
-        } else {
-            false
-        }
+    fn matches_parent(parent: &ParentRef<'_>) -> bool {
+        parent
+            .typed_data::<ScalarFn>()
+            .is_some_and(|data| data.scalar_fn().is::<F>())
     }
 
-    fn try_match(array: &ArrayRef) -> Option<Self::Match<'_>> {
-        let scalar_fn_array = array.as_opt::<ScalarFn>()?;
+    fn try_match_parent<'a>(parent: &ParentRef<'a>) -> Option<Self::Match<'a>> {
+        let scalar_fn_array = parent.try_array_view::<ScalarFn>()?;
         let scalar_fn_data = scalar_fn_array.data();
         let scalar_fn = scalar_fn_data.scalar_fn().downcast_ref::<F>()?;
         Some(ScalarFnArrayView {
-            array,
+            array: scalar_fn_array.array(),
             vtable: scalar_fn.vtable(),
             options: scalar_fn.options(),
         })

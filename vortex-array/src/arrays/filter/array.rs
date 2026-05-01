@@ -56,7 +56,7 @@ impl FilterData {
         Self { mask }
     }
 
-    fn try_new(array_len: usize, mask: Mask) -> VortexResult<Self> {
+    pub fn try_new(array_len: usize, mask: Mask) -> VortexResult<Self> {
         vortex_ensure_eq!(
             array_len,
             mask.len(),
@@ -91,25 +91,30 @@ impl FilterData {
 impl Array<Filter> {
     /// Creates a new `FilterArray`.
     pub fn new(array: ArrayRef, mask: Mask) -> Self {
-        let dtype = array.dtype().clone();
-        let len = mask.true_count();
-        let data = FilterData::new(mask);
-        unsafe {
-            Array::from_parts_unchecked(
-                ArrayParts::new(Filter, dtype, len, data).with_slots(smallvec![Some(array)]),
-            )
-        }
+        unsafe { Array::from_parts_unchecked(Self::new_parts(array, mask)) }
     }
 
     /// Constructs a new `FilterArray`.
     pub fn try_new(array: ArrayRef, mask: Mask) -> VortexResult<Self> {
+        Ok(unsafe { Array::from_parts_unchecked(Self::try_new_parts(array, mask)?) })
+    }
+
+    /// Builds the [`ArrayParts<Filter>`]. The parts can then be optimized through
+    /// [`ParentRef::optimize`](crate::array::ParentRef::optimize) or materialized
+    /// directly with [`ArrayParts::into_array`].
+    pub fn try_new_parts(array: ArrayRef, mask: Mask) -> VortexResult<ArrayParts<Filter>> {
         let dtype = array.dtype().clone();
         let len = mask.true_count();
         let data = FilterData::try_new(array.len(), mask)?;
-        Ok(unsafe {
-            Array::from_parts_unchecked(
-                ArrayParts::new(Filter, dtype, len, data).with_slots(smallvec![Some(array)]),
-            )
-        })
+        Ok(ArrayParts::new(Filter, dtype, len, data).with_slots(smallvec![Some(array)]))
+    }
+
+    /// Builds the [`ArrayParts<Filter>`] without checking that the mask length matches
+    /// the array length. See [`Self::try_new_parts`] for the checked variant.
+    pub fn new_parts(array: ArrayRef, mask: Mask) -> ArrayParts<Filter> {
+        let dtype = array.dtype().clone();
+        let len = mask.true_count();
+        let data = FilterData::new(mask);
+        ArrayParts::new(Filter, dtype, len, data).with_slots(smallvec![Some(array)])
     }
 }

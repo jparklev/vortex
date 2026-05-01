@@ -10,9 +10,11 @@ use crate::Canonical;
 use crate::ExecutionCtx;
 use crate::IntoArray;
 use crate::array::ArrayView;
+use crate::array::ParentRef;
 use crate::array::VTable;
 use crate::arrays::ConstantArray;
 use crate::arrays::dict::DictArraySlotsExt;
+use crate::arrays::dict::DictSlotsView;
 use crate::expr::stats::Precision;
 use crate::expr::stats::Stat;
 use crate::expr::stats::StatsProvider;
@@ -106,6 +108,30 @@ where
         }
         Ok(result)
     }
+
+    fn reduce_parent_ref(
+        &self,
+        array: ArrayView<'_, V>,
+        parent: &ParentRef<'_>,
+        child_idx: usize,
+    ) -> VortexResult<Option<ArrayRef>> {
+        // Only handle the values child (index 1), not the codes child (index 0).
+        if child_idx != 1 {
+            return Ok(None);
+        }
+        let Some(parent) = parent.try_view::<Dict>() else {
+            return Ok(None);
+        };
+        let codes = DictSlotsView::from_slots(parent.slots()).codes;
+        if let Some(result) = precondition::<V>(array, codes) {
+            return Ok(Some(result));
+        }
+        let result = <V as TakeReduce>::take(array, codes)?;
+        if let Some(taken) = &result {
+            propagate_take_stats(array.array(), taken, codes)?;
+        }
+        Ok(result)
+    }
 }
 
 #[derive(Default, Debug)]
@@ -170,4 +196,32 @@ pub(crate) fn propagate_take_stats(
             &(unsafe { StatsSet::new_unchecked(inexact_min_max) }).as_typed_ref(source.dtype()),
         )
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use vortex_error::VortexResult;
+    use vortex_error::vortex_bail;
+
+    use crate::IntoArray;
+    use crate::ParentRef;
+    use crate::arrays::Constant;
+    use crate::arrays::ConstantArray;
+    use crate::arrays::DictArray;
+    use crate::arrays::PrimitiveArray;
+
+    #[test]
+    fn reduce_adaptor_handles_stack_backed_dict_parent() -> VortexResult<()> {
+        let indices = PrimitiveArray::from_iter([0u32, 0, 0]).into_array();
+        let values = ConstantArray::new(7i32, 1).into_array();
+        let parts = DictArray::try_new_parts(indices, values)?;
+
+        let Some(reduced) = ParentRef::from_parts(&parts).optimize()? else {
+            vortex_bail!("take reduce adaptor should optimize stack-backed parent");
+        };
+
+        assert!(reduced.is::<Constant>());
+        assert_eq!(reduced.len(), 3);
+        Ok(())
+    }
 }

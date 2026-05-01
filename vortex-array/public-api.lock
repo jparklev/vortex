@@ -1578,7 +1578,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -1607,6 +1607,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::bool::BoolMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Bool>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::cast::CastKernel for vortex_array::arrays::Bool
 
@@ -1673,6 +1675,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::bool::BoolMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Bool>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::arrays::bool::BoolArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::Bool>
 
@@ -1752,7 +1756,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -1916,7 +1920,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2096,7 +2100,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2121,6 +2125,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::decimal::DecimalMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Decimal>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::between::BetweenKernel for vortex_array::arrays::Decimal
 
@@ -2222,6 +2228,8 @@ pub type vortex_array::arrays::decimal::DecimalMaskedValidityRule::Parent = vort
 
 pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Decimal>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::arrays::decimal::DecimalArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::Decimal>
 
 pub fn vortex_array::arrays::decimal::DecimalArrayExt::buffer<T: vortex_array::dtype::NativeDecimalType>(&self) -> vortex_buffer::buffer::Buffer<T>
@@ -2316,7 +2324,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2408,7 +2416,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2594,6 +2602,8 @@ pub type vortex_array::arrays::dict::TakeReduceAdaptor<V>::Parent = vortex_array
 
 pub fn vortex_array::arrays::dict::TakeReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::ArrayView<'_, vortex_array::arrays::dict::Dict>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::dict::TakeReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::arrays::dict::DictArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::dict::Dict> + vortex_array::arrays::dict::DictArraySlotsExt
 
 pub fn vortex_array::arrays::dict::DictArrayExt::compute_referenced_values_mask(&self, bool) -> vortex_error::VortexResult<vortex_buffer::bit::buf::BitBuffer>
@@ -2760,7 +2770,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2858,7 +2868,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -2883,6 +2893,8 @@ pub fn vortex_array::arrays::filter::FilterData::is_empty(&self) -> bool
 pub fn vortex_array::arrays::filter::FilterData::len(&self) -> usize
 
 pub fn vortex_array::arrays::filter::FilterData::new(vortex_mask::Mask) -> Self
+
+pub fn vortex_array::arrays::filter::FilterData::try_new(usize, vortex_mask::Mask) -> vortex_error::VortexResult<Self>
 
 impl core::clone::Clone for vortex_array::arrays::filter::FilterData
 
@@ -2939,6 +2951,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::arrays::filter::FilterReduceAdaptor<V>::Parent = vortex_array::arrays::Filter
 
 pub fn vortex_array::arrays::filter::FilterReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::ArrayView<'_, vortex_array::arrays::Filter>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::filter::FilterReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::arrays::filter::FilterArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::Filter>
 
@@ -3046,7 +3060,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -3190,7 +3204,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -3370,7 +3384,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -3554,7 +3568,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -3704,7 +3718,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -3790,7 +3804,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4076,7 +4090,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4101,6 +4115,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Primitive>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::between::BetweenKernel for vortex_array::arrays::Primitive
 
@@ -4210,6 +4226,8 @@ pub type vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::Parent = 
 
 pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Primitive>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::arrays::primitive::PrimitiveArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::Primitive>
 
 pub fn vortex_array::arrays::primitive::PrimitiveArrayExt::buffer_handle(&self) -> &vortex_array::buffer::BufferHandle
@@ -4292,7 +4310,11 @@ pub type vortex_array::arrays::scalar_fn::AnyScalarFn::Match<'a> = vortex_array:
 
 pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub struct vortex_array::arrays::scalar_fn::ExactScalarFn<F: vortex_array::scalar_fn::ScalarFnVTable>(_)
 
@@ -4310,7 +4332,11 @@ pub type vortex_array::arrays::scalar_fn::ExactScalarFn<F>::Match<'a> = vortex_a
 
 pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub struct vortex_array::arrays::scalar_fn::ScalarFn
 
@@ -4358,7 +4384,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4480,7 +4506,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4592,7 +4618,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4683,6 +4709,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::arrays::slice::SliceReduceAdaptor<V>::Parent = vortex_array::arrays::slice::Slice
 
 pub fn vortex_array::arrays::slice::SliceReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, <Self::Parent as vortex_array::matcher::Matcher>::Match, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::slice::SliceReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::arrays::slice::SliceArrayExt: vortex_array::TypedArrayRef<vortex_array::arrays::slice::Slice>
 
@@ -4818,7 +4846,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -4974,7 +5002,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5340,7 +5368,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5526,7 +5554,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5594,7 +5622,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5623,6 +5651,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::bool::BoolMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Bool>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::cast::CastKernel for vortex_array::arrays::Bool
 
@@ -5686,7 +5716,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5776,7 +5806,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5862,7 +5892,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -5887,6 +5917,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::decimal::DecimalMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Decimal>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::between::BetweenKernel for vortex_array::arrays::Decimal
 
@@ -5954,7 +5986,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6044,7 +6076,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6126,7 +6158,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6184,7 +6216,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6262,7 +6294,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6344,7 +6376,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6426,7 +6458,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6504,7 +6536,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6586,7 +6618,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6660,7 +6692,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6685,6 +6717,8 @@ impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays:
 pub type vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Primitive>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::scalar_fn::fns::between::BetweenKernel for vortex_array::arrays::Primitive
 
@@ -6752,7 +6786,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6810,7 +6844,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6868,7 +6902,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -6930,7 +6964,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -7008,7 +7042,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -7094,7 +7128,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -7176,7 +7210,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -13554,7 +13588,11 @@ pub type vortex_array::matcher::AnyArray::Match<'a> = &'a vortex_array::ArrayRef
 
 pub fn vortex_array::matcher::AnyArray::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::matcher::AnyArray::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::matcher::AnyArray::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::matcher::AnyArray::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub trait vortex_array::matcher::Matcher
 
@@ -13562,7 +13600,11 @@ pub type vortex_array::matcher::Matcher::Match<'a>
 
 pub fn vortex_array::matcher::Matcher::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::matcher::Matcher::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::matcher::Matcher::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::matcher::Matcher::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl vortex_array::matcher::Matcher for vortex_array::AnyCanonical
 
@@ -13570,7 +13612,11 @@ pub type vortex_array::AnyCanonical::Match<'a> = vortex_array::CanonicalView<'a>
 
 pub fn vortex_array::AnyCanonical::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::AnyCanonical::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::AnyCanonical::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::AnyCanonical::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl vortex_array::matcher::Matcher for vortex_array::AnyColumnar
 
@@ -13578,7 +13624,11 @@ pub type vortex_array::AnyColumnar::Match<'a> = vortex_array::ColumnarView<'a>
 
 pub fn vortex_array::AnyColumnar::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::AnyColumnar::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::AnyColumnar::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::AnyColumnar::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl vortex_array::matcher::Matcher for vortex_array::arrays::scalar_fn::AnyScalarFn
 
@@ -13586,7 +13636,11 @@ pub type vortex_array::arrays::scalar_fn::AnyScalarFn::Match<'a> = vortex_array:
 
 pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::arrays::scalar_fn::AnyScalarFn::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl vortex_array::matcher::Matcher for vortex_array::matcher::AnyArray
 
@@ -13594,7 +13648,11 @@ pub type vortex_array::matcher::AnyArray::Match<'a> = &'a vortex_array::ArrayRef
 
 pub fn vortex_array::matcher::AnyArray::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::matcher::AnyArray::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::matcher::AnyArray::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::matcher::AnyArray::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl<F: vortex_array::scalar_fn::ScalarFnVTable> vortex_array::matcher::Matcher for vortex_array::arrays::scalar_fn::ExactScalarFn<F>
 
@@ -13602,7 +13660,11 @@ pub type vortex_array::arrays::scalar_fn::ExactScalarFn<F>::Match<'a> = vortex_a
 
 pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::arrays::scalar_fn::ExactScalarFn<F>::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 impl<V: vortex_array::VTable> vortex_array::matcher::Matcher for V
 
@@ -13610,7 +13672,11 @@ pub type V::Match<'a> = vortex_array::ArrayView<'a, V>
 
 pub fn V::matches(&vortex_array::ArrayRef) -> bool
 
-pub fn V::try_match(&vortex_array::ArrayRef) -> core::option::Option<vortex_array::ArrayView<'_, V>>
+pub fn V::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
+pub fn V::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn V::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub mod vortex_array::memory
 
@@ -13776,9 +13842,9 @@ impl<S: vortex_session::SessionExt> vortex_array::optimizer::kernels::ArrayKerne
 
 pub fn S::kernels(&self) -> vortex_session::Ref<'_, vortex_array::optimizer::kernels::ArrayKernels>
 
-pub type vortex_array::optimizer::kernels::ExecuteParentFn = fn(&vortex_array::ArrayRef, &vortex_array::ArrayRef, usize, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub type vortex_array::optimizer::kernels::ExecuteParentFn = fn(&vortex_array::ArrayRef, &vortex_array::ParentRef<'_>, usize, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub type vortex_array::optimizer::kernels::ReduceParentFn = fn(&vortex_array::ArrayRef, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub type vortex_array::optimizer::kernels::ReduceParentFn = fn(&vortex_array::ArrayRef, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub mod vortex_array::optimizer::rules
 
@@ -13786,9 +13852,9 @@ pub struct vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, R>
 
 impl<V: vortex_array::VTable, K: vortex_array::optimizer::rules::ArrayParentReduceRule<V>> vortex_array::optimizer::rules::DynArrayParentReduceRule<V> for vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>
 
-pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::matches(&self, &vortex_array::ArrayRef) -> bool
+pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::matches(&self, &vortex_array::ParentRef<'_>) -> bool
 
-pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V: vortex_array::VTable, R: vortex_array::optimizer::rules::ArrayParentReduceRule<V>> core::fmt::Debug for vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, R>
 
@@ -13798,7 +13864,7 @@ pub struct vortex_array::optimizer::rules::ParentRuleSet<V: vortex_array::VTable
 
 impl<V: vortex_array::VTable> vortex_array::optimizer::rules::ParentRuleSet<V>
 
-pub fn vortex_array::optimizer::rules::ParentRuleSet<V>::evaluate(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::optimizer::rules::ParentRuleSet<V>::evaluate(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub const fn vortex_array::optimizer::rules::ParentRuleSet<V>::lift<R: vortex_array::optimizer::rules::ArrayParentReduceRule<V>>(&'static R) -> &'static dyn vortex_array::optimizer::rules::DynArrayParentReduceRule<V>
 
@@ -13818,11 +13884,15 @@ pub type vortex_array::optimizer::rules::ArrayParentReduceRule::Parent: vortex_a
 
 pub fn vortex_array::optimizer::rules::ArrayParentReduceRule::reduce_parent(&self, vortex_array::ArrayView<'_, V>, <Self::Parent as vortex_array::matcher::Matcher>::Match, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::optimizer::rules::ArrayParentReduceRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays::Bool> for vortex_array::arrays::bool::BoolMaskedValidityRule
 
 pub type vortex_array::arrays::bool::BoolMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Bool>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::bool::BoolMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays::Decimal> for vortex_array::arrays::decimal::DecimalMaskedValidityRule
 
@@ -13830,11 +13900,15 @@ pub type vortex_array::arrays::decimal::DecimalMaskedValidityRule::Parent = vort
 
 pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Decimal>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::decimal::DecimalMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl vortex_array::optimizer::rules::ArrayParentReduceRule<vortex_array::arrays::Primitive> for vortex_array::arrays::primitive::PrimitiveMaskedValidityRule
 
 pub type vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::Parent = vortex_array::arrays::Masked
 
 pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent(&self, vortex_array::ArrayView<'_, vortex_array::arrays::Primitive>, vortex_array::ArrayView<'_, vortex_array::arrays::Masked>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::primitive::PrimitiveMaskedValidityRule::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::arrays::dict::TakeReduceAdaptor<V> where V: vortex_array::arrays::dict::TakeReduce
 
@@ -13842,11 +13916,15 @@ pub type vortex_array::arrays::dict::TakeReduceAdaptor<V>::Parent = vortex_array
 
 pub fn vortex_array::arrays::dict::TakeReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::ArrayView<'_, vortex_array::arrays::dict::Dict>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::dict::TakeReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::arrays::filter::FilterReduceAdaptor<V> where V: vortex_array::arrays::filter::FilterReduce
 
 pub type vortex_array::arrays::filter::FilterReduceAdaptor<V>::Parent = vortex_array::arrays::Filter
 
 pub fn vortex_array::arrays::filter::FilterReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::ArrayView<'_, vortex_array::arrays::Filter>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::arrays::filter::FilterReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::arrays::slice::SliceReduceAdaptor<V> where V: vortex_array::arrays::slice::SliceReduce
 
@@ -13854,11 +13932,15 @@ pub type vortex_array::arrays::slice::SliceReduceAdaptor<V>::Parent = vortex_arr
 
 pub fn vortex_array::arrays::slice::SliceReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, <Self::Parent as vortex_array::matcher::Matcher>::Match, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::arrays::slice::SliceReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::between::BetweenReduce
 
 pub type vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::between::Between>
 
 pub fn vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::between::Between>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::cast::CastReduce
 
@@ -13866,11 +13948,15 @@ pub type vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::Parent = vort
 
 pub fn vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::cast::Cast>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::fill_null::FillNullReduce
 
 pub type vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::fill_null::FillNull>
 
 pub fn vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::fill_null::FillNull>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::like::LikeReduce
 
@@ -13878,11 +13964,15 @@ pub type vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::Parent = vort
 
 pub fn vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::like::Like>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduce
 
 pub type vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::list_contains::ListContains>
 
 pub fn vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::list_contains::ListContains>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::mask::MaskReduce
 
@@ -13890,11 +13980,15 @@ pub type vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::Parent = vort
 
 pub fn vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::mask::Mask>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::not::NotReduce
 
 pub type vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::not::Not>
 
 pub fn vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::not::Not>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V> where V: vortex_array::scalar_fn::fns::zip::ZipReduce
 
@@ -13902,21 +13996,23 @@ pub type vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::Parent = vortex
 
 pub fn vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::zip::Zip>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::optimizer::rules::ArrayReduceRule<V: vortex_array::VTable>: core::fmt::Debug + core::marker::Send + core::marker::Sync + 'static
 
 pub fn vortex_array::optimizer::rules::ArrayReduceRule::reduce(&self, vortex_array::ArrayView<'_, V>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::optimizer::rules::DynArrayParentReduceRule<V: vortex_array::VTable>: core::fmt::Debug + core::marker::Send + core::marker::Sync
 
-pub fn vortex_array::optimizer::rules::DynArrayParentReduceRule::matches(&self, &vortex_array::ArrayRef) -> bool
+pub fn vortex_array::optimizer::rules::DynArrayParentReduceRule::matches(&self, &vortex_array::ParentRef<'_>) -> bool
 
-pub fn vortex_array::optimizer::rules::DynArrayParentReduceRule::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::optimizer::rules::DynArrayParentReduceRule::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 impl<V: vortex_array::VTable, K: vortex_array::optimizer::rules::ArrayParentReduceRule<V>> vortex_array::optimizer::rules::DynArrayParentReduceRule<V> for vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>
 
-pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::matches(&self, &vortex_array::ArrayRef) -> bool
+pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::matches(&self, &vortex_array::ParentRef<'_>) -> bool
 
-pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::optimizer::rules::ParentReduceRuleAdapter<V, K>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::optimizer::ArrayOptimizer
 
@@ -16162,6 +16258,8 @@ pub type vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::Parent 
 
 pub fn vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::between::Between>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::between::BetweenReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::scalar_fn::fns::between::BetweenKernel: vortex_array::VTable
 
 pub fn vortex_array::scalar_fn::fns::between::BetweenKernel::between(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, &vortex_array::ArrayRef, &vortex_array::scalar_fn::fns::between::BetweenOptions, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
@@ -16432,6 +16530,8 @@ pub type vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::Parent = vort
 
 pub fn vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::cast::Cast>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::cast::CastReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::scalar_fn::fns::cast::CastKernel: vortex_array::VTable
 
 pub fn vortex_array::scalar_fn::fns::cast::CastKernel::cast(vortex_array::ArrayView<'_, Self>, &vortex_array::dtype::DType, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
@@ -16683,6 +16783,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::fill_null::FillNull>
 
 pub fn vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::fill_null::FillNull>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::fill_null::FillNullReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::scalar_fn::fns::fill_null::FillNullKernel: vortex_array::VTable
 
@@ -16968,6 +17070,8 @@ pub type vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::Parent = vort
 
 pub fn vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::like::Like>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
+pub fn vortex_array::scalar_fn::fns::like::LikeReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
 pub trait vortex_array::scalar_fn::fns::like::LikeKernel: vortex_array::VTable
 
 pub fn vortex_array::scalar_fn::fns::like::LikeKernel::like(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, vortex_array::scalar_fn::fns::like::LikeOptions, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
@@ -17057,6 +17161,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::list_contains::ListContains>
 
 pub fn vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::list_contains::ListContains>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::list_contains::ListContainsElementReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::scalar_fn::fns::list_contains::ListContainsElementKernel: vortex_array::VTable
 
@@ -17189,6 +17295,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::mask::Mask>
 
 pub fn vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::mask::Mask>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::mask::MaskReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::scalar_fn::fns::mask::MaskKernel: vortex_array::VTable
 
@@ -17413,6 +17521,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::not::Not>
 
 pub fn vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::not::Not>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::not::NotReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::scalar_fn::fns::not::NotKernel: vortex_array::VTable
 
@@ -17877,6 +17987,8 @@ impl<V> vortex_array::optimizer::rules::ArrayParentReduceRule<V> for vortex_arra
 pub type vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::Parent = vortex_array::arrays::scalar_fn::ExactScalarFn<vortex_array::scalar_fn::fns::zip::Zip>
 
 pub fn vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::reduce_parent(&self, vortex_array::ArrayView<'_, V>, vortex_array::arrays::scalar_fn::ScalarFnArrayView<'_, vortex_array::scalar_fn::fns::zip::Zip>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::scalar_fn::fns::zip::ZipReduceAdaptor<V>::reduce_parent_ref(&self, vortex_array::ArrayView<'_, V>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub trait vortex_array::scalar_fn::fns::zip::ZipKernel: vortex_array::VTable
 
@@ -20026,7 +20138,7 @@ pub fn vortex_array::vtable::ArrayVTable::nchildren(vortex_array::ArrayView<'_, 
 
 pub fn vortex_array::vtable::ArrayVTable::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::vtable::ArrayVTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::vtable::ArrayVTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::vtable::ArrayVTable::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20066,7 +20178,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20106,7 +20218,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20146,7 +20258,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20186,7 +20298,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20226,7 +20338,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20266,7 +20378,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20306,7 +20418,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20346,7 +20458,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20386,7 +20498,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20426,7 +20538,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20466,7 +20578,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20506,7 +20618,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20546,7 +20658,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20586,7 +20698,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20626,7 +20738,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20666,7 +20778,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20706,7 +20818,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20746,7 +20858,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20786,7 +20898,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20826,7 +20938,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20866,7 +20978,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -20998,7 +21110,7 @@ pub fn vortex_array::vtable::VTable::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::vtable::VTable::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::vtable::VTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::vtable::VTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::vtable::VTable::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21038,7 +21150,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21078,7 +21190,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21118,7 +21230,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21158,7 +21270,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21198,7 +21310,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21238,7 +21350,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21278,7 +21390,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21318,7 +21430,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21358,7 +21470,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21398,7 +21510,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21438,7 +21550,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21478,7 +21590,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21518,7 +21630,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21558,7 +21670,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21598,7 +21710,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21638,7 +21750,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21678,7 +21790,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21718,7 +21830,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21758,7 +21870,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21798,7 +21910,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -21838,7 +21950,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -22200,7 +22312,11 @@ pub type vortex_array::AnyCanonical::Match<'a> = vortex_array::CanonicalView<'a>
 
 pub fn vortex_array::AnyCanonical::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::AnyCanonical::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::AnyCanonical::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::AnyCanonical::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub struct vortex_array::AnyColumnar
 
@@ -22210,7 +22326,11 @@ pub type vortex_array::AnyColumnar::Match<'a> = vortex_array::ColumnarView<'a>
 
 pub fn vortex_array::AnyColumnar::matches(&vortex_array::ArrayRef) -> bool
 
+pub fn vortex_array::AnyColumnar::matches_parent(&vortex_array::ParentRef<'_>) -> bool
+
 pub fn vortex_array::AnyColumnar::try_match(&vortex_array::ArrayRef) -> core::option::Option<Self::Match>
+
+pub fn vortex_array::AnyColumnar::try_match_parent<'a>(&vortex_array::ParentRef<'a>) -> core::option::Option<Self::Match>
 
 pub struct vortex_array::Array<V: vortex_array::VTable>
 
@@ -22284,7 +22404,11 @@ impl vortex_array::Array<vortex_array::arrays::Filter>
 
 pub fn vortex_array::Array<vortex_array::arrays::Filter>::new(vortex_array::ArrayRef, vortex_mask::Mask) -> Self
 
+pub fn vortex_array::Array<vortex_array::arrays::Filter>::new_parts(vortex_array::ArrayRef, vortex_mask::Mask) -> vortex_array::ArrayParts<vortex_array::arrays::Filter>
+
 pub fn vortex_array::Array<vortex_array::arrays::Filter>::try_new(vortex_array::ArrayRef, vortex_mask::Mask) -> vortex_error::VortexResult<Self>
+
+pub fn vortex_array::Array<vortex_array::arrays::Filter>::try_new_parts(vortex_array::ArrayRef, vortex_mask::Mask) -> vortex_error::VortexResult<vortex_array::ArrayParts<vortex_array::arrays::Filter>>
 
 impl vortex_array::Array<vortex_array::arrays::FixedSizeList>
 
@@ -22478,6 +22602,8 @@ pub unsafe fn vortex_array::Array<vortex_array::arrays::dict::Dict>::set_all_val
 
 pub fn vortex_array::Array<vortex_array::arrays::dict::Dict>::try_new(vortex_array::ArrayRef, vortex_array::ArrayRef) -> vortex_error::VortexResult<Self>
 
+pub fn vortex_array::Array<vortex_array::arrays::dict::Dict>::try_new_parts(vortex_array::ArrayRef, vortex_array::ArrayRef) -> vortex_error::VortexResult<vortex_array::ArrayParts<vortex_array::arrays::dict::Dict>>
+
 impl vortex_array::Array<vortex_array::arrays::null::Null>
 
 pub fn vortex_array::Array<vortex_array::arrays::null::Null>::new(usize) -> Self
@@ -22490,7 +22616,11 @@ impl vortex_array::Array<vortex_array::arrays::slice::Slice>
 
 pub fn vortex_array::Array<vortex_array::arrays::slice::Slice>::new(vortex_array::ArrayRef, core::ops::range::Range<usize>) -> Self
 
+pub fn vortex_array::Array<vortex_array::arrays::slice::Slice>::new_parts(vortex_array::ArrayRef, core::ops::range::Range<usize>) -> vortex_array::ArrayParts<vortex_array::arrays::slice::Slice>
+
 pub fn vortex_array::Array<vortex_array::arrays::slice::Slice>::try_new(vortex_array::ArrayRef, core::ops::range::Range<usize>) -> vortex_error::VortexResult<Self>
+
+pub fn vortex_array::Array<vortex_array::arrays::slice::Slice>::try_new_parts(vortex_array::ArrayRef, core::ops::range::Range<usize>) -> vortex_error::VortexResult<vortex_array::ArrayParts<vortex_array::arrays::slice::Slice>>
 
 impl<V: vortex_array::VTable> vortex_array::Array<V>
 
@@ -22682,6 +22812,8 @@ pub vortex_array::ArrayParts::vtable: V
 
 impl<V: vortex_array::VTable> vortex_array::ArrayParts<V>
 
+pub fn vortex_array::ArrayParts<V>::into_array(self) -> vortex_array::ArrayRef
+
 pub fn vortex_array::ArrayParts<V>::new(V, vortex_array::dtype::DType, usize, <V as vortex_array::VTable>::TypedArrayData) -> Self
 
 pub fn vortex_array::ArrayParts<V>::with_slots(self, vortex_array::ArraySlots) -> Self
@@ -22766,7 +22898,7 @@ pub fn vortex_array::ArrayRef::nth_child(&self, usize) -> core::option::Option<v
 
 pub fn vortex_array::ArrayRef::reduce(&self) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::ArrayRef::reduce_parent(&self, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::ArrayRef::reduce_parent(&self, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::ArrayRef::scalar_at(&self, usize) -> vortex_error::VortexResult<vortex_array::scalar::Scalar>
 
@@ -23126,6 +23258,10 @@ pub fn vortex_array::ArrayRef::index_len(&self) -> usize
 
 pub fn vortex_array::ArrayRef::index_lt(&self, usize, &V) -> vortex_error::VortexResult<bool>
 
+impl<'a> core::convert::From<&'a vortex_array::ArrayRef> for vortex_array::ParentRef<'a>
+
+pub fn vortex_array::ParentRef<'a>::from(&'a vortex_array::ArrayRef) -> Self
+
 impl<O: arrow_array::array::list_array::OffsetSizeTrait + vortex_array::dtype::NativePType> vortex_array::arrow::FromArrowArray<&arrow_array::array::list_view_array::GenericListViewArray<O>> for vortex_array::ArrayRef
 
 pub fn vortex_array::ArrayRef::from_arrow(&arrow_array::array::list_view_array::GenericListViewArray<O>, bool) -> vortex_error::VortexResult<Self>
@@ -23339,6 +23475,76 @@ pub struct vortex_array::NotSupported
 impl<V: vortex_array::VTable> vortex_array::OperationsVTable<V> for vortex_array::NotSupported
 
 pub fn vortex_array::NotSupported::scalar_at(vortex_array::ArrayView<'_, V>, usize, &mut vortex_array::ExecutionCtx) -> vortex_error::VortexResult<vortex_array::scalar::Scalar>
+
+pub struct vortex_array::ParentRef<'a>
+
+impl<'a> vortex_array::ParentRef<'a>
+
+pub fn vortex_array::ParentRef<'a>::array_ref(&self) -> core::option::Option<&'a vortex_array::ArrayRef>
+
+pub fn vortex_array::ParentRef<'a>::dtype(&self) -> &'a vortex_array::dtype::DType
+
+pub fn vortex_array::ParentRef<'a>::encoding_id(&self) -> vortex_array::ArrayId
+
+pub fn vortex_array::ParentRef<'a>::from_array_ref(&'a vortex_array::ArrayRef) -> Self
+
+pub fn vortex_array::ParentRef<'a>::is_empty(&self) -> bool
+
+pub fn vortex_array::ParentRef<'a>::len(&self) -> usize
+
+pub fn vortex_array::ParentRef<'a>::optimize(&self) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::ParentRef<'a>::optimize_ctx(&self, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+
+pub fn vortex_array::ParentRef<'a>::slots(&self) -> &'a [core::option::Option<vortex_array::ArrayRef>]
+
+pub fn vortex_array::ParentRef<'a>::try_array_view<V: vortex_array::VTable>(&self) -> core::option::Option<vortex_array::ArrayView<'a, V>>
+
+pub fn vortex_array::ParentRef<'a>::try_view<V: vortex_array::VTable>(&self) -> core::option::Option<vortex_array::ParentView<'a, V>>
+
+impl core::fmt::Debug for vortex_array::ParentRef<'_>
+
+pub fn vortex_array::ParentRef<'_>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+impl<'a> core::clone::Clone for vortex_array::ParentRef<'a>
+
+pub fn vortex_array::ParentRef<'a>::clone(&self) -> vortex_array::ParentRef<'a>
+
+impl<'a> core::convert::From<&'a vortex_array::ArrayRef> for vortex_array::ParentRef<'a>
+
+pub fn vortex_array::ParentRef<'a>::from(&'a vortex_array::ArrayRef) -> Self
+
+impl<'a> core::marker::Copy for vortex_array::ParentRef<'a>
+
+pub struct vortex_array::ParentView<'a, V: vortex_array::VTable>
+
+impl<'a, V: vortex_array::VTable> vortex_array::ParentView<'a, V>
+
+pub fn vortex_array::ParentView<'a, V>::data(&self) -> &'a <V as vortex_array::VTable>::TypedArrayData
+
+pub fn vortex_array::ParentView<'a, V>::dtype(&self) -> &'a vortex_array::dtype::DType
+
+pub fn vortex_array::ParentView<'a, V>::is_empty(&self) -> bool
+
+pub fn vortex_array::ParentView<'a, V>::len(&self) -> usize
+
+pub fn vortex_array::ParentView<'a, V>::slots(&self) -> &'a [core::option::Option<vortex_array::ArrayRef>]
+
+impl<V: vortex_array::VTable> core::clone::Clone for vortex_array::ParentView<'_, V>
+
+pub fn vortex_array::ParentView<'_, V>::clone(&self) -> Self
+
+impl<V: vortex_array::VTable> core::fmt::Debug for vortex_array::ParentView<'_, V>
+
+pub fn vortex_array::ParentView<'_, V>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+impl<V: vortex_array::VTable> core::marker::Copy for vortex_array::ParentView<'_, V>
+
+impl<V: vortex_array::VTable> core::ops::deref::Deref for vortex_array::ParentView<'_, V>
+
+pub type vortex_array::ParentView<'_, V>::Target = <V as vortex_array::VTable>::TypedArrayData
+
+pub fn vortex_array::ParentView<'_, V>::deref(&self) -> &<V as vortex_array::VTable>::TypedArrayData
 
 pub struct vortex_array::ProstMetadata<M>(pub M)
 
@@ -23698,7 +23904,7 @@ pub fn vortex_array::ArrayVTable::nchildren(vortex_array::ArrayView<'_, Self>) -
 
 pub fn vortex_array::ArrayVTable::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::ArrayVTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::ArrayVTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::ArrayVTable::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23738,7 +23944,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23778,7 +23984,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23818,7 +24024,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23858,7 +24064,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23898,7 +24104,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23938,7 +24144,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -23978,7 +24184,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24018,7 +24224,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24058,7 +24264,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24098,7 +24304,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24138,7 +24344,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24178,7 +24384,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24218,7 +24424,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24258,7 +24464,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24298,7 +24504,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24338,7 +24544,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24378,7 +24584,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24418,7 +24624,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24458,7 +24664,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24498,7 +24704,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24538,7 +24744,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24918,7 +25124,7 @@ pub fn vortex_array::VTable::nchildren(vortex_array::ArrayView<'_, Self>) -> usi
 
 pub fn vortex_array::VTable::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::VTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::VTable::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::VTable::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24958,7 +25164,7 @@ pub fn vortex_array::arrays::Bool::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::Bool::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Bool::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Bool::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -24998,7 +25204,7 @@ pub fn vortex_array::arrays::Chunked::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Chunked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Chunked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Chunked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25038,7 +25244,7 @@ pub fn vortex_array::arrays::Constant::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::Constant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Constant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Constant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25078,7 +25284,7 @@ pub fn vortex_array::arrays::Decimal::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Decimal::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Decimal::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Decimal::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25118,7 +25324,7 @@ pub fn vortex_array::arrays::Extension::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Extension::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Extension::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Extension::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25158,7 +25364,7 @@ pub fn vortex_array::arrays::Filter::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Filter::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Filter::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Filter::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25198,7 +25404,7 @@ pub fn vortex_array::arrays::FixedSizeList::nchildren(vortex_array::ArrayView<'_
 
 pub fn vortex_array::arrays::FixedSizeList::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::FixedSizeList::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::FixedSizeList::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25238,7 +25444,7 @@ pub fn vortex_array::arrays::List::nchildren(vortex_array::ArrayView<'_, Self>) 
 
 pub fn vortex_array::arrays::List::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::List::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::List::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25278,7 +25484,7 @@ pub fn vortex_array::arrays::ListView::nchildren(vortex_array::ArrayView<'_, Sel
 
 pub fn vortex_array::arrays::ListView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::ListView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::ListView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25318,7 +25524,7 @@ pub fn vortex_array::arrays::Masked::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Masked::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Masked::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Masked::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25358,7 +25564,7 @@ pub fn vortex_array::arrays::Primitive::nchildren(vortex_array::ArrayView<'_, Se
 
 pub fn vortex_array::arrays::Primitive::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Primitive::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Primitive::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25398,7 +25604,7 @@ pub fn vortex_array::arrays::Shared::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Shared::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Shared::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Shared::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25438,7 +25644,7 @@ pub fn vortex_array::arrays::Struct::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::Struct::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Struct::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Struct::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25478,7 +25684,7 @@ pub fn vortex_array::arrays::VarBin::nchildren(vortex_array::ArrayView<'_, Self>
 
 pub fn vortex_array::arrays::VarBin::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBin::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBin::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25518,7 +25724,7 @@ pub fn vortex_array::arrays::VarBinView::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::VarBinView::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::VarBinView::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::VarBinView::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25558,7 +25764,7 @@ pub fn vortex_array::arrays::Variant::nchildren(vortex_array::ArrayView<'_, Self
 
 pub fn vortex_array::arrays::Variant::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::Variant::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::Variant::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25598,7 +25804,7 @@ pub fn vortex_array::arrays::dict::Dict::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::dict::Dict::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::dict::Dict::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::dict::Dict::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25638,7 +25844,7 @@ pub fn vortex_array::arrays::null::Null::nchildren(vortex_array::ArrayView<'_, S
 
 pub fn vortex_array::arrays::null::Null::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::null::Null::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::null::Null::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25678,7 +25884,7 @@ pub fn vortex_array::arrays::patched::Patched::nchildren(vortex_array::ArrayView
 
 pub fn vortex_array::arrays::patched::Patched::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::patched::Patched::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::patched::Patched::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25718,7 +25924,7 @@ pub fn vortex_array::arrays::scalar_fn::ScalarFn::nchildren(vortex_array::ArrayV
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::scalar_fn::ScalarFn::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::scalar_fn::ScalarFn::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 
@@ -25758,7 +25964,7 @@ pub fn vortex_array::arrays::slice::Slice::nchildren(vortex_array::ArrayView<'_,
 
 pub fn vortex_array::arrays::slice::Slice::reduce(vortex_array::ArrayView<'_, Self>) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
-pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
+pub fn vortex_array::arrays::slice::Slice::reduce_parent(vortex_array::ArrayView<'_, Self>, &vortex_array::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::ArrayRef>>
 
 pub fn vortex_array::arrays::slice::Slice::serialize(vortex_array::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 

@@ -9,6 +9,7 @@ use crate::ArrayRef;
 use crate::ArrayView;
 use crate::ExecutionCtx;
 use crate::IntoArray;
+use crate::ParentRef;
 use crate::arrays::ConstantArray;
 use crate::arrays::Struct;
 use crate::arrays::StructArray;
@@ -23,14 +24,14 @@ use crate::scalar_fn::fns::cast::Cast;
 
 pub(crate) fn struct_cast_execute_parent(
     child: &ArrayRef,
-    parent: &ArrayRef,
+    parent: &ParentRef,
     _child_idx: usize,
     ctx: &mut ExecutionCtx,
 ) -> VortexResult<Option<ArrayRef>> {
     let Some(array) = child.as_opt::<Struct>() else {
         return Ok(None);
     };
-    let Some(parent) = ExactScalarFn::<Cast>::try_match(parent) else {
+    let Some(parent) = ExactScalarFn::<Cast>::try_match_parent(parent) else {
         return Ok(None);
     };
 
@@ -124,6 +125,7 @@ mod tests {
     use crate::ArrayRef;
     use crate::ExecutionCtx;
     use crate::IntoArray;
+    use crate::ParentRef;
     use crate::VortexSessionExecute;
     use crate::arrays::ConstantArray;
     use crate::arrays::PrimitiveArray;
@@ -153,7 +155,7 @@ mod tests {
 
     fn null_struct_cast_execute_parent(
         child: &ArrayRef,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         _child_idx: usize,
         _ctx: &mut ExecutionCtx,
     ) -> VortexResult<Option<ArrayRef>> {

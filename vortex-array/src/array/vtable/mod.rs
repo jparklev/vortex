@@ -25,6 +25,7 @@ use crate::Canonical;
 use crate::ExecutionResult;
 use crate::IntoArray;
 use crate::Precision;
+use crate::array::ParentRef;
 pub use crate::array::plugin::*;
 use crate::arrays::ConstantArray;
 use crate::arrays::constant::Constant;
@@ -205,7 +206,7 @@ pub trait VTable: 'static + Clone + Sized + Send + Sync + Debug {
     /// Attempt to perform a reduction of the parent of this array.
     fn reduce_parent(
         array: ArrayView<'_, Self>,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>> {
         _ = (array, parent, child_idx);

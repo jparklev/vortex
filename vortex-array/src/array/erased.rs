@@ -21,6 +21,7 @@ use crate::AnyCanonical;
 use crate::Array;
 use crate::ArrayEq;
 use crate::ArrayHash;
+use crate::ArraySlots;
 use crate::ArrayView;
 use crate::Canonical;
 use crate::ExecutionCtx;
@@ -33,8 +34,9 @@ use crate::aggregate_fn::fns::sum::sum;
 use crate::array::ArrayData;
 use crate::array::ArrayId;
 use crate::array::ArrayInner;
-use crate::array::ArraySlots;
+use crate::array::ArrayParts;
 use crate::array::DynArrayData;
+use crate::array::ParentRef;
 use crate::arrays::Bool;
 use crate::arrays::Constant;
 use crate::arrays::DictArray;
@@ -94,6 +96,11 @@ impl ArrayRef {
         &self.0.data
     }
 
+    #[inline(always)]
+    pub(crate) fn inner(&self) -> &ArrayInner<dyn DynArrayData> {
+        &self.0
+    }
+
     /// Returns a mutable reference to the inner if this is the sole owner.
     #[inline(always)]
     pub(crate) fn inner_mut(&mut self) -> Option<&mut ArrayInner<dyn DynArrayData>> {
@@ -141,6 +148,14 @@ impl ArrayRef {
     pub fn ptr_eq(this: &ArrayRef, other: &ArrayRef) -> bool {
         Arc::ptr_eq(&this.0, &other.0)
     }
+}
+
+fn optimize_stack_parts<V: VTable>(parts: ArrayParts<V>) -> VortexResult<ArrayRef> {
+    if let Some(reduced) = ParentRef::from_parts(&parts).optimize()? {
+        return Ok(reduced);
+    }
+
+    parts.into_array().optimize()
 }
 
 impl Debug for ArrayRef {
@@ -228,9 +243,8 @@ impl ArrayRef {
             return Ok(Canonical::empty(self.dtype()).into_array());
         }
 
-        let sliced = SliceArray::try_new(self.clone(), range)?
-            .into_array()
-            .optimize()?;
+        let parts = SliceArray::try_new_parts(self.clone(), range)?;
+        let sliced = optimize_stack_parts(parts)?;
 
         // Propagate some stats from the original array to the sliced array.
         if !sliced.is::<Constant>() {
@@ -255,16 +269,14 @@ impl ArrayRef {
 
     /// Wraps the array in a [`FilterArray`] such that it is logically filtered by the given mask.
     pub fn filter(&self, mask: Mask) -> VortexResult<ArrayRef> {
-        FilterArray::try_new(self.clone(), mask)?
-            .into_array()
-            .optimize()
+        let parts = FilterArray::try_new_parts(self.clone(), mask)?;
+        optimize_stack_parts(parts)
     }
 
     /// Wraps the array in a [`DictArray`] such that it is logically taken by the given indices.
     pub fn take(&self, indices: ArrayRef) -> VortexResult<ArrayRef> {
-        DictArray::try_new(indices, self.clone())?
-            .into_array()
-            .optimize()
+        let parts = DictArray::try_new_parts(indices, self.clone())?;
+        optimize_stack_parts(parts)
     }
 
     /// Fetch the scalar at the given index.
@@ -402,7 +414,8 @@ impl ArrayRef {
 
     /// Returns the array downcast by the given matcher.
     pub fn as_opt<M: Matcher>(&self) -> Option<M::Match<'_>> {
-        M::try_match(self)
+        let parent = ParentRef::from_array_ref(self);
+        M::matches_parent(&parent).then(|| M::try_match_parent(&parent))?
     }
 
     /// Returns the array downcast to the given `Array<V>` as an owned typed handle.
@@ -596,7 +609,7 @@ impl ArrayRef {
 
     pub fn reduce_parent(
         &self,
-        parent: &ArrayRef,
+        parent: &ParentRef<'_>,
         child_idx: usize,
     ) -> VortexResult<Option<ArrayRef>> {
         self.0.data.reduce_parent(self, parent, child_idx)
@@ -739,13 +752,16 @@ impl IntoArray for ArrayRef {
 impl<V: VTable> Matcher for V {
     type Match<'a> = ArrayView<'a, V>;
 
-    fn matches(array: &ArrayRef) -> bool {
-        array.0.data.as_any().is::<ArrayData<V>>()
+    fn try_match_parent<'a>(parent: &ParentRef<'a>) -> Option<Self::Match<'a>> {
+        parent.try_array_view::<V>()
     }
 
-    fn try_match(array: &'_ ArrayRef) -> Option<ArrayView<'_, V>> {
-        let inner = array.0.data.as_any().downcast_ref::<ArrayData<V>>()?;
-        // # Safety checked by `downcast_ref`.
-        Some(unsafe { ArrayView::new_unchecked(array, &inner.data) })
+    /// Match by encoding-specific data downcast, so [`ParentRuleSet`] still consults
+    /// rules whose [`reduce_parent_ref`](crate::optimizer::rules::ArrayParentReduceRule::reduce_parent_ref)
+    /// override handles stack-allocated parents (whose `array_ref()` is `None`).
+    ///
+    /// [`ParentRuleSet`]: crate::optimizer::rules::ParentRuleSet
+    fn matches_parent(parent: &ParentRef<'_>) -> bool {
+        parent.is_encoding::<V>()
     }
 }

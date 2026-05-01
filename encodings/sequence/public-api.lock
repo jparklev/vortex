@@ -38,7 +38,7 @@ pub fn vortex_sequence::Sequence::id(&self) -> vortex_array::array::ArrayId
 
 pub fn vortex_sequence::Sequence::nbuffers(vortex_array::array::view::ArrayView<'_, Self>) -> usize
 
-pub fn vortex_sequence::Sequence::reduce_parent(vortex_array::array::view::ArrayView<'_, Self>, &vortex_array::array::erased::ArrayRef, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::array::erased::ArrayRef>>
+pub fn vortex_sequence::Sequence::reduce_parent(vortex_array::array::view::ArrayView<'_, Self>, &vortex_array::array::parent::ParentRef<'_>, usize) -> vortex_error::VortexResult<core::option::Option<vortex_array::array::erased::ArrayRef>>
 
 pub fn vortex_sequence::Sequence::serialize(vortex_array::array::view::ArrayView<'_, Self>, &vortex_session::VortexSession) -> vortex_error::VortexResult<core::option::Option<alloc::vec::Vec<u8>>>
 

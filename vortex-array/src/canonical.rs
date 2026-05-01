@@ -17,6 +17,7 @@ use crate::Executable;
 use crate::ExecutionCtx;
 use crate::IntoArray;
 use crate::array::ArrayView;
+use crate::array::ParentRef;
 use crate::array::child_to_validity;
 use crate::arrays::Bool;
 use crate::arrays::BoolArray;
@@ -1005,41 +1006,42 @@ pub struct AnyCanonical;
 impl Matcher for AnyCanonical {
     type Match<'a> = CanonicalView<'a>;
 
-    fn matches(array: &ArrayRef) -> bool {
-        array.is::<Null>()
-            || array.is::<Bool>()
-            || array.is::<Primitive>()
-            || array.is::<Decimal>()
-            || array.is::<Struct>()
-            || array.is::<ListView>()
-            || array.is::<FixedSizeList>()
-            || array.is::<VarBinView>()
-            || array.is::<Variant>()
-            || array.is::<Extension>()
-            || array.is::<Variant>()
+    fn matches_parent(parent: &ParentRef<'_>) -> bool {
+        Null::matches_parent(parent)
+            || Bool::matches_parent(parent)
+            || Primitive::matches_parent(parent)
+            || Decimal::matches_parent(parent)
+            || Struct::matches_parent(parent)
+            || ListView::matches_parent(parent)
+            || FixedSizeList::matches_parent(parent)
+            || VarBinView::matches_parent(parent)
+            || Variant::matches_parent(parent)
+            || Extension::matches_parent(parent)
     }
 
-    fn try_match(array: &ArrayRef) -> Option<Self::Match<'_>> {
-        if let Some(a) = array.as_opt::<Null>() {
+    fn try_match_parent<'a>(parent: &ParentRef<'a>) -> Option<Self::Match<'a>> {
+        if let Some(a) = parent.try_array_view::<Null>() {
             Some(CanonicalView::Null(a))
-        } else if let Some(a) = array.as_opt::<Bool>() {
+        } else if let Some(a) = parent.try_array_view::<Bool>() {
             Some(CanonicalView::Bool(a))
-        } else if let Some(a) = array.as_opt::<Primitive>() {
+        } else if let Some(a) = parent.try_array_view::<Primitive>() {
             Some(CanonicalView::Primitive(a))
-        } else if let Some(a) = array.as_opt::<Decimal>() {
+        } else if let Some(a) = parent.try_array_view::<Decimal>() {
             Some(CanonicalView::Decimal(a))
-        } else if let Some(a) = array.as_opt::<Struct>() {
+        } else if let Some(a) = parent.try_array_view::<Struct>() {
             Some(CanonicalView::Struct(a))
-        } else if let Some(a) = array.as_opt::<ListView>() {
+        } else if let Some(a) = parent.try_array_view::<ListView>() {
             Some(CanonicalView::List(a))
-        } else if let Some(a) = array.as_opt::<FixedSizeList>() {
+        } else if let Some(a) = parent.try_array_view::<FixedSizeList>() {
             Some(CanonicalView::FixedSizeList(a))
-        } else if let Some(a) = array.as_opt::<VarBinView>() {
+        } else if let Some(a) = parent.try_array_view::<VarBinView>() {
             Some(CanonicalView::VarBinView(a))
-        } else if let Some(a) = array.as_opt::<Variant>() {
+        } else if let Some(a) = parent.try_array_view::<Variant>() {
             Some(CanonicalView::Variant(a))
         } else {
-            array.as_opt::<Extension>().map(CanonicalView::Extension)
+            parent
+                .try_array_view::<Extension>()
+                .map(CanonicalView::Extension)
         }
     }
 }
