@@ -330,7 +330,7 @@ fn c2rust(crate_dir: &Path, duckdb_include_dir: &Path) {
 fn cpp(duckdb_include_dir: &Path) {
     cc::Build::new()
         .std("c++20")
-        .flags(["-Wall", "-Wextra", "-Wpedantic"])
+        .flags(["-Wall", "-Wextra", "-Wpedantic", "-Werror"])
         .cpp(true)
         .include(duckdb_include_dir)
         .include("cpp/include")
@@ -391,8 +391,12 @@ fn main() {
 
     let crate_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
     let duckdb_dir = crate_dir.join("duckdb");
-    let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let library_dir = out_dir.join(format!("duckdb-lib-{version}"));
+    // Cargo has changed OUT_DIR behaviour so for every branch and build we have
+    // a different directory e.g.
+    // ~/vortex/target/release/build/vortex-duckdb-b6bc1fb73230910e/out/duckdb-lib-v1.5.2
+    // We don't want this since artifacts are the same.
+    // We can't use CARGO_TARGET_DIR since it's out of tree.
+    let library_dir = duckdb_dir.join(format!("duckdb-lib-{version}"));
 
     let library_dir_str = library_dir.display();
     println!("cargo:rustc-link-search=native={library_dir_str}");
@@ -413,7 +417,7 @@ fn main() {
     // Alternatively, set LD_LIBRARY_PATH (Linux) or DYLD_LIBRARY_PATH (macOS) at runtime.
     println!("cargo:lib_dir={library_dir_str}");
 
-    let source_dir = out_dir.join(format!("duckdb-source-{version}"));
+    let source_dir = duckdb_dir.join(format!("duckdb-source-{version}"));
     let source_archive_url = match &version {
         DuckDBVersion::Release(v) => format!("{DUCKDB_SOURCE_RELEASE_URL}/v{v}.zip"),
         DuckDBVersion::Commit(c) => format!("{DUCKDB_SOURCE_COMMIT_URL}/{c}.zip"),
@@ -427,10 +431,6 @@ fn main() {
     if !inner_dir.join("CMakeLists.txt").exists() {
         extract(&source_archive_path, &source_dir);
     }
-
-    drop(fs::remove_file(&duckdb_dir));
-    drop(fs::remove_dir_all(&duckdb_dir));
-    std::os::unix::fs::symlink(&source_dir, &duckdb_dir).unwrap();
 
     let has_debug_env =
         env::var("VX_DUCKDB_DEBUG").is_ok_and(|v| matches!(v.as_str(), "1" | "true"));
