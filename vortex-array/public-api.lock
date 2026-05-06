@@ -23264,8 +23264,6 @@ impl vortex_array::ExecutionCtx
 
 pub fn vortex_array::ExecutionCtx::allocator(&self) -> vortex_array::memory::HostAllocatorRef
 
-pub fn vortex_array::ExecutionCtx::log(&mut self, core::fmt::Arguments<'_>)
-
 pub fn vortex_array::ExecutionCtx::new(vortex_session::VortexSession) -> Self
 
 pub fn vortex_array::ExecutionCtx::session(&self) -> &vortex_session::VortexSession
@@ -23281,10 +23279,6 @@ pub fn vortex_array::ExecutionCtx::fmt(&self, &mut core::fmt::Formatter<'_>) -> 
 impl core::fmt::Display for vortex_array::ExecutionCtx
 
 pub fn vortex_array::ExecutionCtx::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-
-impl core::ops::drop::Drop for vortex_array::ExecutionCtx
-
-pub fn vortex_array::ExecutionCtx::drop(&mut self)
 
 pub struct vortex_array::ExecutionResult
 
