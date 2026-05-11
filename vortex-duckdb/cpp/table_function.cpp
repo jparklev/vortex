@@ -15,6 +15,11 @@ DUCKDB_INCLUDES_BEGIN
 #include "duckdb/main/capi/capi_internal.hpp"
 #include "duckdb/main/connection.hpp"
 #include "duckdb/parser/parsed_data/create_table_function_info.hpp"
+#include "duckdb/planner/expression/bound_operator_expression.hpp"
+#include "duckdb/planner/expression/bound_comparison_expression.hpp"
+#include "duckdb/planner/expression/bound_between_expression.hpp"
+#include "duckdb/planner/expression/bound_conjunction_expression.hpp"
+#include "duckdb/planner/expression/bound_function_expression.hpp"
 DUCKDB_INCLUDES_END
 
 using namespace duckdb;
@@ -392,6 +397,74 @@ InsertionOrderPreservingMap<string> c_to_string(TableFunctionToStringInput &inpu
     return result;
 }
 
+/*
+ * Called either before pushdown_complex_filter or a table filter expression
+ * call. In pushdown_complex_filter we can tell DuckDB we can't push the
+ * filter down by returning Ok(None) but this isn't an option for a table
+ * filter. Be conservative and allow only DuckDB expressions we know will
+ * either always produce a valid Vortex expression or return an error, so no
+ * Ok(None) case.
+ *
+ * See src/convert/expr.rs.
+ */
+bool pushdown_expression(const BaseExpression &expr) {
+    using enum ExpressionClass;
+    switch (expr.GetExpressionClass()) {
+    case BOUND_COLUMN_REF:
+    case BOUND_CONSTANT:
+    case BOUND_REF:
+        return true;
+    case BOUND_COMPARISON: {
+        const auto &comparison = expr.Cast<BoundComparisonExpression>();
+        return pushdown_expression(*comparison.left) && pushdown_expression(*comparison.right);
+    }
+    case BOUND_BETWEEN: {
+        const auto &between = expr.Cast<BoundBetweenExpression>();
+        return pushdown_expression(*between.input) && pushdown_expression(*between.lower) &&
+               pushdown_expression(*between.upper);
+    }
+    case BOUND_CONJUNCTION: {
+        for (const auto &child : expr.Cast<BoundConjunctionExpression>().children) {
+            if (!pushdown_expression(*child)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    case BOUND_FUNCTION: {
+        // Although we can support ~~ and !~~ (LIKE), pushing them down is a
+        // regression.
+        constexpr std::array<std::string_view, 4> supported = {"struct_extract",
+                                                               "contains",
+                                                               "prefix",
+                                                               "suffix"};
+        const std::string_view name = expr.Cast<BoundFunctionExpression>().function.name;
+        return std::find(supported.begin(), supported.end(), name) != supported.end();
+    }
+    case BOUND_OPERATOR: {
+        switch (expr.GetExpressionType()) {
+        case ExpressionType::OPERATOR_NOT:
+        case ExpressionType::OPERATOR_IS_NULL:
+        case ExpressionType::OPERATOR_IS_NOT_NULL:
+        case ExpressionType::COMPARE_IN:
+        case ExpressionType::COMPARE_NOT_IN:
+            break;
+        default:
+            return false;
+        }
+
+        for (const auto &child : expr.Cast<BoundOperatorExpression>().children) {
+            if (!pushdown_expression(*child)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    default:
+        return false;
+    }
+}
+
 extern "C" duckdb_state duckdb_vx_tfunc_register(duckdb_database ffi_db, const duckdb_vx_tfunc_vtab_t *vtab) {
     D_ASSERT(ffi_db);
     D_ASSERT(vtab);
@@ -406,6 +479,9 @@ extern "C" duckdb_state duckdb_vx_tfunc_register(duckdb_database ffi_db, const d
     tf.sampling_pushdown = false;
 
     tf.pushdown_complex_filter = c_pushdown_complex_filter;
+    tf.pushdown_expression = [](auto &, const auto &, Expression &expression) {
+        return pushdown_expression(expression);
+    };
     tf.cardinality = c_cardinality;
     tf.get_partition_info = get_partition_info;
     tf.get_partition_data = get_partition_data;
@@ -426,10 +502,6 @@ extern "C" duckdb_state duckdb_vx_tfunc_register(duckdb_database ffi_db, const d
             {COLUMN_IDENTIFIER_FILE_INDEX, {"file_index", LogicalType::UBIGINT}},
             {COLUMN_IDENTIFIER_FILE_ROW_NUMBER, {"file_row_number", LogicalType::BIGINT}},
         };
-    };
-
-    tf.pushdown_expression = [](auto &, auto &, auto &) {
-        return true;
     };
 
     tf.arguments.resize(vtab->parameter_count);

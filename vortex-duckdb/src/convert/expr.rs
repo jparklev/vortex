@@ -60,30 +60,20 @@ fn try_from_bound_function(
             let field = from_bound_str(children[1])?;
             get_item(field, child)
         }
-        "contains" => {
+        matchers @ ("contains" | "prefix" | "suffix") => {
             let children: Vec<_> = func.children().collect();
             vortex_ensure!(children.len() == 2);
             let Some(value) = try_from_expression_inner(children[0], col_sub)? else {
                 return Ok(None);
             };
             let pattern = from_bound_str(children[1])?;
-            let pattern = lit(format!("%{pattern}%"));
-            Like.new_expr(LikeOptions::default(), [value, pattern])
-        }
-        like @ ("~~" | "!~~") => {
-            let children: Vec<_> = func.children().collect();
-            vortex_ensure!(children.len() == 2);
-            let Some(string) = try_from_expression_inner(children[0], col_sub)? else {
-                return Ok(None);
+            let pattern = match matchers {
+                "contains" => format!("%{pattern}%"),
+                "prefix" => format!("{pattern}%"),
+                "suffix" => format!("%{pattern}"),
+                _ => unreachable!(),
             };
-            let Some(target) = try_from_expression_inner(children[1], col_sub)? else {
-                return Ok(None);
-            };
-            let opts = LikeOptions {
-                negated: like == "!~~",
-                case_insensitive: false,
-            };
-            Like.new_expr(opts, [string, target])
+            Like.new_expr(LikeOptions::default(), [value, lit(pattern)])
         }
         _ => {
             debug!("bound function {}", func.scalar_function.name());
@@ -107,6 +97,8 @@ pub(super) fn try_from_bound_expression_with_col_sub(
     try_from_expression_inner(value, Some(col_sub))
 }
 
+// If you want to add support for other expressions, also change
+// pushdown_expression function in cpp/table_function.cpp
 fn try_from_expression_inner(
     value: &duckdb::ExpressionRef,
     col_sub: Option<&Expression>,
