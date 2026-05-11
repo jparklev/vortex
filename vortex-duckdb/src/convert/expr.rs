@@ -9,6 +9,7 @@ use vortex::error::VortexError;
 use vortex::error::VortexExpect;
 use vortex::error::VortexResult;
 use vortex::error::vortex_bail;
+use vortex::error::vortex_ensure;
 use vortex::error::vortex_err;
 use vortex::expr::Expression;
 use vortex::expr::and_collect;
@@ -19,6 +20,7 @@ use vortex::expr::list_contains;
 use vortex::expr::lit;
 use vortex::expr::not;
 use vortex::expr::or_collect;
+use vortex::expr::substr;
 use vortex::scalar::Scalar;
 use vortex::scalar_fn::ScalarFnVTableExt;
 use vortex::scalar_fn::fns::between::Between;
@@ -32,8 +34,6 @@ use vortex::scalar_fn::fns::operators::Operator;
 
 use crate::cpp::DUCKDB_VX_EXPR_TYPE;
 use crate::duckdb;
-
-const DUCKDB_FUNCTION_NAME_CONTAINS: &str = "contains";
 
 fn like_pattern_str(value: &duckdb::ExpressionRef) -> VortexResult<Option<String>> {
     match value.as_class().vortex_expect("unknown class") {
@@ -151,7 +151,7 @@ pub fn try_from_bound_expression(
             }
         },
         duckdb::ExpressionClass::BoundFunction(func) => match func.scalar_function.name() {
-            DUCKDB_FUNCTION_NAME_CONTAINS => {
+            "contains" => {
                 let children: Vec<_> = func.children().collect();
                 assert_eq!(children.len(), 2);
                 let Some(value) = try_from_bound_expression(children[0])? else {
@@ -162,6 +162,25 @@ pub fn try_from_bound_expression(
                 };
                 let pattern = lit(pattern_lit);
                 Like.new_expr(LikeOptions::default(), [value, pattern])
+            }
+            "substr" | "substring" => {
+                let children: Vec<_> = func.children().collect();
+                vortex_ensure!(children.len() == 2 || children.len() == 3);
+                let Some(string) = try_from_bound_expression(children[0])? else {
+                    return Ok(None);
+                };
+                let Some(start) = try_from_bound_expression(children[1])? else {
+                    return Ok(None);
+                };
+                let length = if children.len() == 3 {
+                    let Some(len_expr) = try_from_bound_expression(children[2])? else {
+                        return Ok(None);
+                    };
+                    Some(len_expr)
+                } else {
+                    None
+                };
+                substr(string, start, length)
             }
             _ => {
                 debug!("bound function {}", func.scalar_function.name());
