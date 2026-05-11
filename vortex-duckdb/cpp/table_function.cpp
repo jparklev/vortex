@@ -432,12 +432,8 @@ bool pushdown_expression(const BaseExpression &expr) {
         return true;
     }
     case BOUND_FUNCTION: {
-        // Although we can support ~~ and !~~ (LIKE), pushing them down is a
-        // regression.
-        constexpr std::array<std::string_view, 4> supported = {"struct_extract",
-                                                               "contains",
-                                                               "prefix",
-                                                               "suffix"};
+        constexpr std::array<std::string_view, 6> supported =
+            {"struct_extract", "contains", "prefix", "suffix", "~~", "!~~"};
         const std::string_view name = expr.Cast<BoundFunctionExpression>().function.name;
         return std::find(supported.begin(), supported.end(), name) != supported.end();
     }

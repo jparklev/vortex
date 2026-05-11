@@ -60,6 +60,21 @@ fn try_from_bound_function(
             let field = from_bound_str(children[1])?;
             get_item(field, child)
         }
+        like @ ("~~" | "!~~") => {
+            let children: Vec<_> = func.children().collect();
+            vortex_ensure!(children.len() == 2);
+            let Some(string) = try_from_expression_inner(children[0], col_sub)? else {
+                return Ok(None);
+            };
+            let Some(target) = try_from_expression_inner(children[1], col_sub)? else {
+                return Ok(None);
+            };
+            let opts = LikeOptions {
+                negated: like == "!~~",
+                case_insensitive: false,
+            };
+            Like.new_expr(opts, [string, target])
+        }
         matchers @ ("contains" | "prefix" | "suffix") => {
             let children: Vec<_> = func.children().collect();
             vortex_ensure!(children.len() == 2);
