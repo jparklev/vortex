@@ -10477,6 +10477,7 @@ dependencies = [
  "vortex-array",
  "vortex-buffer",
  "vortex-error",
+ "vortex-fsst",
  "vortex-session",
 ]
 
@@ -10778,6 +10779,7 @@ version = "0.1.0"
 dependencies = [
  "codspeed-divan-compat",
  "fsst-rs",
+ "num-traits",
  "prost 0.14.3",
  "rand 0.10.1",
  "rstest",

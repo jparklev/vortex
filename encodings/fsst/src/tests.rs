@@ -18,8 +18,8 @@ use vortex_buffer::buffer;
 use vortex_mask::Mask;
 
 use crate::FSST;
-use crate::fsst_compress;
-use crate::fsst_train_compressor;
+use crate::fsst_compress_varbin;
+use crate::fsst_train_compressor_varbin;
 
 /// this function is VERY slow on miri, so we only want to run it once
 pub(crate) fn build_fsst_array() -> ArrayRef {
@@ -31,11 +31,11 @@ pub(crate) fn build_fsst_array() -> ArrayRef {
     input_array.append_value(b"Nothing in present history can contradict them");
     let input_array = input_array.finish(DType::Utf8(Nullability::NonNullable));
 
-    let compressor = fsst_train_compressor(&input_array);
-    let len = input_array.len();
-    let dtype = input_array.dtype().clone();
     let mut ctx = LEGACY_SESSION.create_execution_ctx();
-    fsst_compress(input_array, len, &dtype, &compressor, &mut ctx).into_array()
+    let compressor = fsst_train_compressor_varbin(&input_array, &mut ctx).unwrap();
+    fsst_compress_varbin(&input_array, &compressor, &mut ctx)
+        .unwrap()
+        .into_array()
 }
 
 #[test]
@@ -114,7 +114,7 @@ fn test_fsst_array_ops() {
 // TODO(someone): ideally CI would run this in release mode as well since debug builds make the
 // allocation and compression loop substantially slower.
 /// Regression for #7833: [`fsst_compress`] must accept inputs whose cumulative compressed
-/// bytes exceed [`i32::MAX`]. Before the fix, [`fsst_compress_iter`] hardcoded
+/// bytes exceed [`i32::MAX`]. Before the fix, [`fsst_compress_varbin`] hardcoded
 /// [`VarBinBuilder<i32>`] for the FSST output and panicked in
 /// [`VarBinBuilder::append_value`] once cumulative compressed bytes crossed the boundary.
 ///
@@ -129,7 +129,7 @@ fn test_fsst_array_ops() {
 /// CI=1 cargo test --release -p vortex-fsst fsst_compress_offsets
 /// ```
 ///
-/// [`fsst_compress_iter`]: crate::compress::fsst_compress_iter
+/// [`fsst_compress_varbin`]: crate::compress::fsst_compress_varbin
 #[test_with::env(CI)]
 #[test_with::no_env(VORTEX_SKIP_SLOW_TESTS)]
 fn fsst_compress_offsets_overflow_i32() {
@@ -150,7 +150,6 @@ fn fsst_compress_offsets_overflow_i32() {
         .map(|_| *ALPHABET.choose(&mut rng).unwrap())
         .collect();
 
-    println!("building large VarBinArray");
     let mut builder = VarBinBuilder::<i64>::with_capacity(N);
     for i in 0..N {
         let off = i.wrapping_mul(31337) % (POOL_LEN - STRING_LEN);
@@ -158,13 +157,9 @@ fn fsst_compress_offsets_overflow_i32() {
     }
     let array = builder.finish(DType::Utf8(Nullability::NonNullable));
 
-    println!("training FSST compressor");
-    let compressor = fsst_train_compressor(&array);
     let len = array.len();
-    let dtype = array.dtype().clone();
     let mut ctx = LEGACY_SESSION.create_execution_ctx();
-
-    println!("compressing to FSST");
-    let compressed = fsst_compress(array, len, &dtype, &compressor, &mut ctx);
+    let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
+    let compressed = fsst_compress_varbin(&array, &compressor, &mut ctx).unwrap();
     assert_eq!(compressed.len(), len);
 }

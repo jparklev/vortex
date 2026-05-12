@@ -102,24 +102,17 @@ mod tests {
 
     use crate::FSST;
     use crate::FSSTArray;
-    use crate::fsst_compress;
-    use crate::fsst_train_compressor;
+    use crate::fsst_compress_varbin;
+    use crate::fsst_train_compressor_varbin;
 
     static SESSION: LazyLock<VortexSession> =
         LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
 
     fn make_fsst(strings: &[Option<&str>], nullability: Nullability) -> FSSTArray {
         let varbin = VarBinArray::from_iter(strings.iter().copied(), DType::Utf8(nullability));
-        let compressor = fsst_train_compressor(&varbin);
-        let len = varbin.len();
-        let dtype = varbin.dtype().clone();
-        fsst_compress(
-            varbin,
-            len,
-            &dtype,
-            &compressor,
-            &mut SESSION.create_execution_ctx(),
-        )
+        let mut ctx = SESSION.create_execution_ctx();
+        let compressor = fsst_train_compressor_varbin(&varbin, &mut ctx).unwrap();
+        fsst_compress_varbin(&varbin, &compressor, &mut ctx).unwrap()
     }
 
     fn run_like(array: FSSTArray, pattern: &str, opts: LikeOptions) -> VortexResult<BoolArray> {

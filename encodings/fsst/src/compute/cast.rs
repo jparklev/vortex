@@ -100,33 +100,30 @@ mod tests {
     use vortex_array::dtype::DType;
     use vortex_array::dtype::Nullability;
     use vortex_array::session::ArraySession;
+    use vortex_error::VortexResult;
     use vortex_session::VortexSession;
 
-    use crate::fsst_compress;
-    use crate::fsst_train_compressor;
+    use crate::fsst_compress_varbin;
+    use crate::fsst_train_compressor_varbin;
 
     static SESSION: LazyLock<VortexSession> =
         LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
 
     #[test]
-    fn test_cast_fsst_nullability() {
+    fn test_cast_fsst_nullability() -> VortexResult<()> {
         let mut ctx = SESSION.create_execution_ctx();
         let strings = VarBinArray::from_iter(
             vec![Some("hello"), Some("world"), Some("hello world")],
             DType::Utf8(Nullability::NonNullable),
         );
 
-        let compressor = fsst_train_compressor(&strings);
-        let len = strings.len();
-        let dtype = strings.dtype().clone();
-        let fsst = fsst_compress(strings, len, &dtype, &compressor, &mut ctx);
+        let compressor = fsst_train_compressor_varbin(&strings, &mut ctx)?;
+        let fsst = fsst_compress_varbin(&strings, &compressor, &mut ctx)?;
 
         // Cast to nullable
-        let casted = fsst
-            .into_array()
-            .cast(DType::Utf8(Nullability::Nullable))
-            .unwrap();
+        let casted = fsst.into_array().cast(DType::Utf8(Nullability::Nullable))?;
         assert_eq!(casted.dtype(), &DType::Utf8(Nullability::Nullable));
+        Ok(())
     }
 
     #[rstest]
@@ -142,10 +139,11 @@ mod tests {
         vec![Some("test")],
         DType::Utf8(Nullability::NonNullable)
     ))]
-    fn test_cast_fsst_conformance(#[case] array: VarBinArray) {
+    fn test_cast_fsst_conformance(#[case] array: VarBinArray) -> VortexResult<()> {
         let mut ctx = SESSION.create_execution_ctx();
-        let compressor = fsst_train_compressor(&array);
-        let fsst = fsst_compress(&array, array.len(), array.dtype(), &compressor, &mut ctx);
+        let compressor = fsst_train_compressor_varbin(&array, &mut ctx)?;
+        let fsst = fsst_compress_varbin(&array, &compressor, &mut ctx)?;
         test_cast_conformance(&fsst.into_array());
+        Ok(())
     }
 }

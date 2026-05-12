@@ -108,8 +108,8 @@ mod tests {
     use vortex_error::VortexResult;
     use vortex_session::VortexSession;
 
-    use crate::fsst_compress;
-    use crate::fsst_train_compressor;
+    use crate::fsst_compress_varbin;
+    use crate::fsst_train_compressor_varbin;
 
     static SESSION: LazyLock<VortexSession> =
         LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
@@ -153,9 +153,10 @@ mod tests {
         let (arr_vec, data_vec): (Vec<ArrayRef>, Vec<Vec<Option<Vec<u8>>>>) = (0..10)
             .map(|_| {
                 let (array, data) = make_data();
-                let compressor = fsst_train_compressor(&array);
+                let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
                 (
-                    fsst_compress(&array, array.len(), array.dtype(), &compressor, &mut ctx)
+                    fsst_compress_varbin(&array, &compressor, &mut ctx)
+                        .unwrap()
                         .into_array(),
                     data,
                 )
@@ -210,13 +211,11 @@ mod tests {
             dtype,
         );
         let mut ctx = SESSION.create_execution_ctx();
-        let fsst_array = fsst_compress(
+        let fsst_array = fsst_compress_varbin(
             &varbin,
-            varbin.len(),
-            varbin.dtype(),
-            &fsst_train_compressor(&varbin),
+            &fsst_train_compressor_varbin(&varbin, &mut ctx)?,
             &mut ctx,
-        )
+        )?
         .into_array();
         fsst_array.append_to_builder(&mut builder, &mut ctx)?;
 

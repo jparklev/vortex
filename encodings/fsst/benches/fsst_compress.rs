@@ -25,8 +25,8 @@ use vortex_array::dtype::Nullability;
 use vortex_array::scalar::Scalar;
 use vortex_array::scalar_fn::fns::operators::Operator;
 use vortex_array::session::ArraySession;
-use vortex_fsst::fsst_compress;
-use vortex_fsst::fsst_train_compressor;
+use vortex_fsst::fsst_compress_varbin;
+use vortex_fsst::fsst_train_compressor_varbin;
 use vortex_session::VortexSession;
 
 fn main() {
@@ -55,27 +55,21 @@ const BENCH_ARGS: &[(usize, usize, u8)] = &[
 #[divan::bench(args = BENCH_ARGS)]
 fn compress_fsst(bencher: Bencher, (string_count, avg_len, unique_chars): (usize, usize, u8)) {
     let array = generate_test_data(string_count, avg_len, unique_chars);
-    let compressor = fsst_train_compressor(&array);
+    let compressor =
+        fsst_train_compressor_varbin(&array, &mut LEGACY_SESSION.create_execution_ctx()).unwrap();
     bencher
         .with_inputs(|| (&array, &compressor, LEGACY_SESSION.create_execution_ctx()))
         .bench_refs(|(array, compressor, ctx)| {
-            fsst_compress(*array, array.len(), array.dtype(), compressor, ctx)
+            fsst_compress_varbin(array, compressor, ctx).unwrap()
         })
 }
 
 #[divan::bench(args = BENCH_ARGS)]
 fn decompress_fsst(bencher: Bencher, (string_count, avg_len, unique_chars): (usize, usize, u8)) {
     let array = generate_test_data(string_count, avg_len, unique_chars);
-    let compressor = fsst_train_compressor(&array);
-    let len = array.len();
-    let dtype = array.dtype().clone();
-    let encoded = fsst_compress(
-        array,
-        len,
-        &dtype,
-        &compressor,
-        &mut LEGACY_SESSION.create_execution_ctx(),
-    );
+    let mut ctx = LEGACY_SESSION.create_execution_ctx();
+    let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
+    let encoded = fsst_compress_varbin(&array, &compressor, &mut ctx).unwrap();
 
     bencher
         .with_inputs(|| (&encoded, LEGACY_SESSION.create_execution_ctx()))
@@ -86,21 +80,16 @@ fn decompress_fsst(bencher: Bencher, (string_count, avg_len, unique_chars): (usi
 fn train_compressor(bencher: Bencher, (string_count, avg_len, unique_chars): (usize, usize, u8)) {
     let array = generate_test_data(string_count, avg_len, unique_chars);
     bencher
-        .with_inputs(|| &array)
-        .bench_refs(|array| fsst_train_compressor(array))
+        .with_inputs(|| (&array, LEGACY_SESSION.create_execution_ctx()))
+        .bench_refs(|(array, ctx)| fsst_train_compressor_varbin(array, ctx).unwrap())
 }
 
 #[divan::bench(args = BENCH_ARGS)]
 fn pushdown_compare(bencher: Bencher, (string_count, avg_len, unique_chars): (usize, usize, u8)) {
     let array = generate_test_data(string_count, avg_len, unique_chars);
-    let compressor = fsst_train_compressor(&array);
-    let fsst_array = fsst_compress(
-        &array,
-        array.len(),
-        array.dtype(),
-        &compressor,
-        &mut LEGACY_SESSION.create_execution_ctx(),
-    );
+    let mut ctx = LEGACY_SESSION.create_execution_ctx();
+    let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
+    let fsst_array = fsst_compress_varbin(&array, &compressor, &mut ctx).unwrap();
     let constant = ConstantArray::new(Scalar::from(&b"const"[..]), array.len());
 
     bencher
@@ -128,14 +117,9 @@ fn canonicalize_compare(
     (string_count, avg_len, unique_chars): (usize, usize, u8),
 ) {
     let array = generate_test_data(string_count, avg_len, unique_chars);
-    let compressor = fsst_train_compressor(&array);
-    let fsst_array = fsst_compress(
-        &array,
-        array.len(),
-        array.dtype(),
-        &compressor,
-        &mut LEGACY_SESSION.create_execution_ctx(),
-    );
+    let mut ctx = LEGACY_SESSION.create_execution_ctx();
+    let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
+    let fsst_array = fsst_compress_varbin(&array, &compressor, &mut ctx).unwrap();
     let constant = ConstantArray::new(Scalar::from(&b"const"[..]), array.len());
 
     bencher
@@ -239,10 +223,10 @@ fn generate_chunked_test_data(
     (0..chunk_size)
         .map(|_| {
             let array = generate_test_data(string_count, avg_len, unique_chars);
-            let compressor = fsst_train_compressor(&array);
-            let len = array.len();
-            let dtype = array.dtype().clone();
-            fsst_compress(array, len, &dtype, &compressor, &mut ctx).into_array()
+            let compressor = fsst_train_compressor_varbin(&array, &mut ctx).unwrap();
+            fsst_compress_varbin(&array, &compressor, &mut ctx)
+                .unwrap()
+                .into_array()
         })
         .collect::<ChunkedArray>()
 }

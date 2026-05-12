@@ -775,7 +775,7 @@ mod test {
     use crate::FSST;
     use crate::array::FSSTArrayExt;
     use crate::array::FSSTMetadata;
-    use crate::fsst_compress_iter;
+    use crate::fsst_compress;
 
     #[cfg_attr(miri, ignore)]
     #[test]
@@ -807,13 +807,8 @@ mod test {
 
         let compressor = Compressor::rebuild_from(symbols.as_slice(), symbol_lengths.as_slice());
         let mut ctx = LEGACY_SESSION.create_execution_ctx();
-        let fsst_array = fsst_compress_iter(
-            [Some(b"abcabcab".as_ref()), Some(b"defghijk".as_ref())].into_iter(),
-            2,
-            DType::Utf8(Nullability::NonNullable),
-            &compressor,
-            &mut ctx,
-        );
+        let input = VarBinViewArray::from_iter_str(["abcabcab", "defghijk"]);
+        let fsst_array = fsst_compress(&input, &compressor, &mut ctx).unwrap();
 
         let compressed_codes = fsst_array.codes();
 

@@ -18,8 +18,8 @@ use vortex_array::dtype::Nullability;
 use vortex_error::VortexExpect;
 
 use crate::FSSTArray;
-use crate::fsst_compress;
-use crate::fsst_train_compressor;
+use crate::fsst_compress_varbin;
+use crate::fsst_train_compressor_varbin;
 
 pub fn gen_fsst_test_data(
     len: usize,
@@ -47,11 +47,11 @@ pub fn gen_fsst_test_data(
             .map(|opt_s| opt_s.map(Vec::into_boxed_slice)),
         DType::Binary(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
 
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx).into_array()
+    fsst_compress_varbin(&varbin, &compressor, ctx)
+        .unwrap()
+        .into_array()
 }
 
 pub fn gen_dict_fsst_test_data<T: NativePType>(
@@ -145,10 +145,8 @@ pub fn generate_url_data_n(n: usize) -> VarBinArray {
 
 pub fn make_fsst_urls(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
     let varbin = generate_url_data_n(n);
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -241,10 +239,8 @@ pub fn make_fsst_clickbench_urls(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray 
         urls.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -309,10 +305,8 @@ pub fn make_fsst_short_urls(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         urls.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -381,10 +375,8 @@ pub fn make_fsst_log_lines(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         lines.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -440,10 +432,8 @@ pub fn make_fsst_json_strings(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         jsons.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -512,10 +502,8 @@ pub fn make_fsst_file_paths(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         paths.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -565,10 +553,8 @@ pub fn make_fsst_emails(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         emails.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }
 
 // ---------------------------------------------------------------------------
@@ -604,8 +590,6 @@ pub fn make_fsst_rare_match(n: usize, ctx: &mut ExecutionCtx) -> FSSTArray {
         strings.iter().map(|s| Some(s.as_str())),
         DType::Utf8(Nullability::NonNullable),
     );
-    let compressor = fsst_train_compressor(&varbin);
-    let len = varbin.len();
-    let dtype = varbin.dtype().clone();
-    fsst_compress(varbin, len, &dtype, &compressor, ctx)
+    let compressor = fsst_train_compressor_varbin(&varbin, ctx).unwrap();
+    fsst_compress_varbin(&varbin, &compressor, ctx).unwrap()
 }

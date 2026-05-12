@@ -37,8 +37,8 @@ mod tests {
     use vortex_session::VortexSession;
 
     use crate::FSST;
-    use crate::fsst_compress;
-    use crate::fsst_train_compressor;
+    use crate::fsst_compress_varbin;
+    use crate::fsst_train_compressor_varbin;
 
     static SESSION: LazyLock<VortexSession> =
         LazyLock::new(|| VortexSession::empty().with::<ArraySession>());
@@ -57,11 +57,11 @@ mod tests {
         builder.append_value(b"final string");
         let input = builder.finish(DType::Utf8(Nullability::NonNullable));
 
-        let compressor = fsst_train_compressor(&input);
-        let len = input.len();
-        let dtype = input.dtype().clone();
         let mut ctx = SESSION.create_execution_ctx();
-        fsst_compress(input, len, &dtype, &compressor, &mut ctx).into_array()
+        let compressor = fsst_train_compressor_varbin(&input, &mut ctx).unwrap();
+        fsst_compress_varbin(&input, &compressor, &mut ctx)
+            .unwrap()
+            .into_array()
     }
 
     #[test]
@@ -133,16 +133,10 @@ mod tests {
         }
         let input = builder.finish(DType::Utf8(Nullability::Nullable));
 
-        let compressor = fsst_train_compressor(&input);
         let mut ctx = SESSION.create_execution_ctx();
-        let fsst_array: ArrayRef = fsst_compress(
-            input.clone(),
-            input.len(),
-            input.dtype(),
-            &compressor,
-            &mut ctx,
-        )
-        .into_array();
+        let compressor = fsst_train_compressor_varbin(&input, &mut ctx)?;
+        let fsst_array: ArrayRef =
+            fsst_compress_varbin(&input, &compressor, &mut ctx)?.into_array();
 
         // Filter: only select the last element (index 22)
         let mut mask = vec![false; 22];
@@ -168,16 +162,10 @@ mod tests {
 
         let input = builder.finish(DType::Utf8(Nullability::Nullable));
 
-        let compressor = fsst_train_compressor(&input);
         let mut ctx = SESSION.create_execution_ctx();
-        let fsst_array: ArrayRef = fsst_compress(
-            input.clone(),
-            input.len(),
-            input.dtype(),
-            &compressor,
-            &mut ctx,
-        )
-        .into_array();
+        let compressor = fsst_train_compressor_varbin(&input, &mut ctx)?;
+        let fsst_array: ArrayRef =
+            fsst_compress_varbin(&input, &compressor, &mut ctx)?.into_array();
 
         let mask = Mask::from_iter([true, false, true]);
 

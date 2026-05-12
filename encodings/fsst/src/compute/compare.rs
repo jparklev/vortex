@@ -134,13 +134,14 @@ mod tests {
     use vortex_array::dtype::Nullability;
     use vortex_array::scalar::Scalar;
     use vortex_array::scalar_fn::fns::operators::Operator;
+    use vortex_error::VortexResult;
 
-    use crate::fsst_compress;
-    use crate::fsst_train_compressor;
+    use crate::fsst_compress_varbin;
+    use crate::fsst_train_compressor_varbin;
 
     #[test]
     #[cfg_attr(miri, ignore)]
-    fn test_compare_fsst() {
+    fn test_compare_fsst() -> VortexResult<()> {
         let mut ctx = LEGACY_SESSION.create_execution_ctx();
         let lhs = VarBinArray::from_iter(
             [
@@ -152,10 +153,8 @@ mod tests {
             ],
             DType::Utf8(Nullability::Nullable),
         );
-        let compressor = fsst_train_compressor(&lhs);
-        let len = lhs.len();
-        let dtype = lhs.dtype().clone();
-        let lhs = fsst_compress(lhs, len, &dtype, &compressor, &mut ctx);
+        let compressor = fsst_train_compressor_varbin(&lhs, &mut ctx)?;
+        let lhs = fsst_compress_varbin(&lhs, &compressor, &mut ctx)?;
 
         let rhs = ConstantArray::new("world", lhs.len());
 
@@ -163,10 +162,8 @@ mod tests {
         let equals = lhs
             .clone()
             .into_array()
-            .binary(rhs.clone().into_array(), Operator::Eq)
-            .unwrap()
-            .execute::<BoolArray>(&mut ctx)
-            .unwrap();
+            .binary(rhs.clone().into_array(), Operator::Eq)?
+            .execute::<BoolArray>(&mut ctx)?;
 
         assert_eq!(equals.dtype(), &DType::Bool(Nullability::Nullable));
 
@@ -179,10 +176,8 @@ mod tests {
         let not_equals = lhs
             .clone()
             .into_array()
-            .binary(rhs.into_array(), Operator::NotEq)
-            .unwrap()
-            .execute::<BoolArray>(&mut ctx)
-            .unwrap();
+            .binary(rhs.into_array(), Operator::NotEq)?
+            .execute::<BoolArray>(&mut ctx)?;
 
         assert_eq!(not_equals.dtype(), &DType::Bool(Nullability::Nullable));
         assert_arrays_eq!(
@@ -196,8 +191,7 @@ mod tests {
         let equals_null = lhs
             .clone()
             .into_array()
-            .binary(null_rhs.clone().into_array(), Operator::Eq)
-            .unwrap();
+            .binary(null_rhs.clone().into_array(), Operator::Eq)?;
         assert_arrays_eq!(
             &equals_null,
             &BoolArray::from_iter([None::<bool>, None, None, None, None])
@@ -205,11 +199,11 @@ mod tests {
 
         let noteq_null = lhs
             .into_array()
-            .binary(null_rhs.into_array(), Operator::NotEq)
-            .unwrap();
+            .binary(null_rhs.into_array(), Operator::NotEq)?;
         assert_arrays_eq!(
             &noteq_null,
             &BoolArray::from_iter([None::<bool>, None, None, None, None])
         );
+        Ok(())
     }
 }

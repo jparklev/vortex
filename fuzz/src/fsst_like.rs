@@ -24,8 +24,8 @@ use vortex_array::scalar_fn::fns::like::LikeOptions;
 use vortex_array::session::ArraySession;
 use vortex_error::VortexResult;
 use vortex_fsst::FSSTArray;
-use vortex_fsst::fsst_compress;
-use vortex_fsst::fsst_train_compressor;
+use vortex_fsst::fsst_compress_varbin;
+use vortex_fsst::fsst_train_compressor_varbin;
 use vortex_session::VortexSession;
 
 use crate::error::Backtrace;
@@ -112,15 +112,11 @@ pub fn run_fsst_like_fuzz(fuzz: FuzzFsstLike) -> VortexFuzzResult<bool> {
     );
 
     // Train FSST compressor and compress.
-    let compressor = fsst_train_compressor(&varbin);
     let mut ctx = SESSION.create_execution_ctx();
-    let fsst_array: FSSTArray = fsst_compress(
-        varbin.clone(),
-        varbin.len(),
-        varbin.dtype(),
-        &compressor,
-        &mut ctx,
-    );
+    let compressor = fsst_train_compressor_varbin(&varbin, &mut ctx)
+        .map_err(|err| VortexFuzzError::VortexError(err, Backtrace::capture()))?;
+    let fsst_array: FSSTArray = fsst_compress_varbin(&varbin, &compressor, &mut ctx)
+        .map_err(|err| VortexFuzzError::VortexError(err, Backtrace::capture()))?;
 
     let opts = LikeOptions {
         negated,

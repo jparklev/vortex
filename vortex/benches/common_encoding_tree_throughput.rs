@@ -236,14 +236,8 @@ mod setup {
         // Train and compress unique values with FSST
         let mut ctx = LEGACY_SESSION.create_execution_ctx();
         let unique_varbinview = VarBinViewArray::from_iter_str(unique_strings);
-        let fsst_compressor = fsst_train_compressor(&unique_varbinview);
-        let fsst_values = fsst_compress(
-            &unique_varbinview,
-            unique_varbinview.len(),
-            unique_varbinview.dtype(),
-            &fsst_compressor,
-            &mut ctx,
-        );
+        let fsst_compressor = fsst_train_compressor(&unique_varbinview, &mut ctx).unwrap();
+        let fsst_values = fsst_compress(&unique_varbinview, &fsst_compressor, &mut ctx).unwrap();
 
         // Create codes array (random indices into unique values)
         let codes: Vec<u32> = (0..NUM_VALUES)
@@ -275,14 +269,8 @@ mod setup {
         // Train and compress unique values with FSST
         let mut ctx = LEGACY_SESSION.create_execution_ctx();
         let unique_varbinview = VarBinViewArray::from_iter_str(unique_strings);
-        let fsst_compressor = fsst_train_compressor(&unique_varbinview);
-        let fsst = fsst_compress(
-            &unique_varbinview,
-            unique_varbinview.len(),
-            unique_varbinview.dtype(),
-            &fsst_compressor,
-            &mut ctx,
-        );
+        let fsst_compressor = fsst_train_compressor(&unique_varbinview, &mut ctx).unwrap();
+        let fsst = fsst_compress(&unique_varbinview, &fsst_compressor, &mut ctx).unwrap();
 
         // Compress the VarBin offsets with BitPacked
         let codes = fsst.codes();
