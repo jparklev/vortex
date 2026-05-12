@@ -5,7 +5,9 @@
 
 mod decode;
 mod encode;
+mod kernels;
 mod metadata;
 
 pub use decode::TQDecode;
 pub use encode::TQEncode;
+pub(crate) use kernels::register_kernels;
