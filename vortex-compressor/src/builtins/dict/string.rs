@@ -22,7 +22,7 @@ use vortex_error::VortexResult;
 use crate::CascadingCompressor;
 use crate::builtins::IntDictScheme;
 use crate::builtins::StringDictScheme;
-use crate::builtins::is_utf8_string;
+use crate::builtins::is_binary_string;
 use crate::ctx::CompressorContext;
 use crate::estimate::CompressionEstimate;
 use crate::estimate::DeferredEstimate;
@@ -40,7 +40,7 @@ impl Scheme for StringDictScheme {
     }
 
     fn matches(&self, canonical: &Canonical) -> bool {
-        is_utf8_string(canonical)
+        is_binary_string(canonical)
     }
 
     fn stats_options(&self) -> GenerateStatsOptions {

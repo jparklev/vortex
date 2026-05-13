@@ -55,6 +55,7 @@ pub struct ZstdBuffersScheme;
 // Re-export builtin schemes from vortex-compressor.
 pub use vortex_compressor::builtins::StringConstantScheme;
 pub use vortex_compressor::builtins::StringDictScheme;
+pub use vortex_compressor::builtins::is_binary_string;
 pub use vortex_compressor::builtins::is_utf8_string;
 pub use vortex_compressor::stats::StringStats;
 
@@ -64,7 +65,7 @@ impl Scheme for FSSTScheme {
     }
 
     fn matches(&self, canonical: &Canonical) -> bool {
-        is_utf8_string(canonical)
+        is_binary_string(canonical)
     }
 
     /// Children: lengths=0, code_offsets=1.
@@ -236,7 +237,7 @@ impl Scheme for ZstdScheme {
     }
 
     fn matches(&self, canonical: &Canonical) -> bool {
-        is_utf8_string(canonical)
+        is_binary_string(canonical)
     }
 
     fn expected_compression_ratio(
@@ -424,6 +425,67 @@ mod scheme_selection_tests {
         let compressed = BtrBlocksCompressor::default()
             .compress(&array_ref, &mut SESSION.create_execution_ctx())?;
         assert!(compressed.is::<FSST>());
+        Ok(())
+    }
+
+    /// Regression test for binary-string compression.
+    ///
+    /// Prior to enabling Binary VarBinView compression, this array was returned
+    /// uncompressed by `CascadingCompressor::compress`. Now it must compress
+    /// (size shrinks) and decompress to a byte-identical canonical form so
+    /// downstream callers reading addresses, hashes, or other opaque byte
+    /// columns get back exactly what they wrote.
+    #[test]
+    fn test_binary_varbinview_roundtrip() -> VortexResult<()> {
+        // 20-byte Ethereum-style addresses with high duplication so dict + FSST
+        // both have plenty to find.
+        let mut a0 = [0u8; 20];
+        a0[..4].copy_from_slice(&[0xde, 0xad, 0xbe, 0xef]);
+        let mut a1 = [0u8; 20];
+        a1[..4].copy_from_slice(&[0xca, 0xfe, 0xba, 0xbe]);
+        let a2 = [0u8; 20];
+        let a3 = [0xffu8; 20];
+        let distinct: [[u8; 20]; 4] = [a0, a1, a2, a3];
+
+        let mut payload: Vec<Vec<u8>> = Vec::with_capacity(4096);
+        for i in 0..4096 {
+            payload.push(distinct[i % 4].to_vec());
+        }
+        let original = VarBinViewArray::from_iter(
+            payload.iter().map(|v| Some(v.as_slice())),
+            DType::Binary(Nullability::NonNullable),
+        );
+        let original_ref = original.clone().into_array();
+        let raw_nbytes = original_ref.nbytes();
+
+        let mut exec_ctx = SESSION.create_execution_ctx();
+        let compressed = BtrBlocksCompressor::default().compress(&original_ref, &mut exec_ctx)?;
+
+        // Sanity: compression actually happened (the early-return path returned
+        // the input untouched, which would leave nbytes equal).
+        assert!(
+            compressed.nbytes() < raw_nbytes,
+            "binary array did not shrink: {} -> {} bytes",
+            raw_nbytes,
+            compressed.nbytes()
+        );
+
+        // Decompress and verify byte-identity at every index.
+        let canonical = compressed.execute::<vortex_array::Canonical>(&mut exec_ctx)?;
+        let decoded = match canonical {
+            vortex_array::Canonical::VarBinView(v) => v,
+            other => panic!("expected VarBinView canonical, got {other:?}"),
+        };
+        assert_eq!(decoded.len(), payload.len());
+        assert_eq!(
+            decoded.dtype(),
+            &DType::Binary(Nullability::NonNullable),
+            "round-trip must preserve Binary dtype"
+        );
+        for (i, expected) in payload.iter().enumerate() {
+            let got = decoded.bytes_at(i);
+            assert_eq!(got.as_slice(), expected.as_slice(), "mismatch at index {i}");
+        }
         Ok(())
     }
 }

@@ -23,8 +23,6 @@ use vortex_array::arrays::listview::list_from_list_view;
 use vortex_array::arrays::primitive::PrimitiveArrayExt;
 use vortex_array::arrays::scalar_fn::AnyScalarFn;
 use vortex_array::arrays::struct_::StructArrayExt;
-use vortex_array::dtype::DType;
-use vortex_array::dtype::Nullability;
 use vortex_array::scalar::Scalar;
 use vortex_error::VortexResult;
 use vortex_error::vortex_bail;
@@ -214,15 +212,11 @@ impl CascadingCompressor {
                 .into_array())
             }
             Canonical::VarBinView(strings) => {
-                if strings
-                    .dtype()
-                    .eq_ignore_nullability(&DType::Utf8(Nullability::NonNullable))
-                {
-                    self.choose_and_compress(Canonical::VarBinView(strings), compress_ctx, exec_ctx)
-                } else {
-                    // We do not compress binary arrays.
-                    Ok(strings.into_array())
-                }
+                // Compress both Utf8 and Binary VarBinView arrays. Schemes that
+                // require UTF-8 validity gate themselves via `is_utf8_string`;
+                // byte-oriented schemes (FSST, Zstd, Dict, Constant) accept either
+                // via `is_binary_string`.
+                self.choose_and_compress(Canonical::VarBinView(strings), compress_ctx, exec_ctx)
             }
             Canonical::Extension(ext_array) => {
                 let before_nbytes = ext_array.as_ref().nbytes();
