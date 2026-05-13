@@ -9,8 +9,9 @@
 // FSST decompression. A thread decodes one string at a time.
 //
 // Byte-by-byte global writes; no per-thread output scratch and no
-// alignment-aware stores yet. The 256-entry symbol table is read directly
-// from global memory.
+// alignment-aware stores yet. The 256-entry symbol table is cooperatively
+// loaded into shared memory before decoding begins so every per-code
+// lookup in the inner loop hits SRAM.
 //
 // The compressed code stream is staged in a per-thread register `chunk`
 // (up to 8 bytes). Refills happen via hierarchical aligned loads: each
@@ -99,7 +100,10 @@ __device__ inline void fsst_chunk_refill(const uint8_t *__restrict codes_bytes,
 }
 
 template <typename OffT>
-__device__ inline void fsst_decode_string(const FSSTArgs<OffT> &args, uint64_t sid) {
+__device__ inline void fsst_decode_string(const FSSTArgs<OffT> &args,
+                                          const uint64_t *sm_symbols,
+                                          const uint8_t *sm_symbol_lengths,
+                                          uint64_t sid) {
     if (((args.validity_bits[sid >> 3] >> (sid & 7u)) & 1u) == 0u) {
         return;
     }
@@ -129,8 +133,8 @@ __device__ inline void fsst_decode_string(const FSSTArgs<OffT> &args, uint64_t s
             chunk >>= 16;
             chunk_bytes -= 2;
         } else {
-            const uint64_t sym = args.symbols[code];
-            const uint8_t len = args.symbol_lengths[code];
+            const uint64_t sym = sm_symbols[code];
+            const uint8_t len = sm_symbol_lengths[code];
 #pragma unroll 1
             for (uint8_t i = 0; i < len; ++i) {
                 args.output_bytes[out_pos + i] = (uint8_t)(sym >> (8u * i));
@@ -162,6 +166,14 @@ __device__ inline void fsst_decode_string(const FSSTArgs<OffT> &args, uint64_t s
             validity_bits,                                                                                   \
         };                                                                                                   \
                                                                                                              \
+        __shared__ uint64_t sm_symbols[256];                                                                 \
+        __shared__ uint8_t sm_symbol_lengths[256];                                                           \
+        for (uint32_t i = threadIdx.x; i < 256; i += blockDim.x) {                                           \
+            sm_symbols[i] = symbols[i];                                                                      \
+            sm_symbol_lengths[i] = symbol_lengths[i];                                                        \
+        }                                                                                                    \
+        __syncthreads();                                                                                     \
+                                                                                                             \
         const uint64_t elements_per_block = (uint64_t)blockDim.x * ELEMENTS_PER_THREAD;                      \
         const uint64_t block_start = (uint64_t)blockIdx.x * elements_per_block;                              \
         const uint64_t block_end = (block_start + elements_per_block < num_strings)                          \
@@ -169,7 +181,7 @@ __device__ inline void fsst_decode_string(const FSSTArgs<OffT> &args, uint64_t s
                                        : num_strings;                                                        \
                                                                                                              \
         for (uint64_t sid = block_start + threadIdx.x; sid < block_end; sid += blockDim.x) {                 \
-            fsst_decode_string<OffT>(args, sid);                                                             \
+            fsst_decode_string<OffT>(args, sm_symbols, sm_symbol_lengths, sid);                              \
         }                                                                                                    \
     }
 
