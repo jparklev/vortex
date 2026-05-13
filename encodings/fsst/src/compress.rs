@@ -52,21 +52,17 @@ pub fn fsst_compress(
 ) -> VortexResult<FSSTArray> {
     let mask = strings.validity()?.execute_mask(strings.len(), ctx)?;
     let views = strings.views();
+    let non_null = mask.true_count();
 
-    let (total_input_bytes, non_null) = match mask.bit_buffer() {
-        AllOr::All => (views.iter().map(|v| v.len() as usize).sum(), views.len()),
-        AllOr::None => (0, 0),
-        AllOr::Some(bits) => {
-            let mut total = 0usize;
-            let mut non_null = 0usize;
-            for (v, b) in views.iter().zip(bits.iter()) {
-                if b {
-                    total += v.len() as usize;
-                    non_null += 1;
-                }
-            }
-            (total, non_null)
-        }
+    let total_input_bytes = match mask.bit_buffer() {
+        AllOr::All => views.iter().map(|v| v.len() as usize).sum(),
+        AllOr::None => 0,
+        AllOr::Some(bits) => views
+            .iter()
+            .zip(bits.iter())
+            .filter(|&(_, b)| b)
+            .map(|(v, _)| v.len() as usize)
+            .sum(),
     };
 
     if fsst_output_fits_in_i32_offsets(total_input_bytes, non_null) {
