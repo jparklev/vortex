@@ -535,9 +535,9 @@ impl<T: DataSourceTableFunction> TableFunction for T {
         // non-optional by definition.
         bind_data.has_non_optional_filter = true;
 
-        debug!(%expr, report_pushed, "pushed down expression");
+        debug!(%expr, "pushed down expression");
         bind_data.filter_exprs.push(expr);
-        Ok(report_pushed)
+        Ok(true)
     }
 
     /// Get column-wise statistics. Available only if we're reading a single
