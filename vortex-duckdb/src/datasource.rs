@@ -535,15 +535,6 @@ impl<T: DataSourceTableFunction> TableFunction for T {
         // non-optional by definition.
         bind_data.has_non_optional_filter = true;
 
-        // Default selectivity filter gives too high cardinality bounds for
-        // equality operators which flips join sides, see tpch sf=10, query 17.
-        // All other operators estimate is mostly correct.
-        // To fix this, we need to start collecting distinct counts for columns.
-        let report_pushed = !expr
-            .as_opt::<Binary>()
-            .map(|op| *op == Operator::Eq)
-            .unwrap_or(false);
-
         debug!(%expr, report_pushed, "pushed down expression");
         bind_data.filter_exprs.push(expr);
         Ok(report_pushed)
