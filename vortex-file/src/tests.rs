@@ -140,6 +140,58 @@ async fn test_read_simple() {
 
 #[tokio::test]
 #[cfg_attr(miri, ignore)]
+async fn test_footer_metadata_bytes_round_trip() -> VortexResult<()> {
+    let strings = ChunkedArray::from_iter([
+        VarBinArray::from(vec!["ab", "foo", "bar", "baz"]).into_array(),
+        VarBinArray::from(vec!["qux", "zip", "zap", "zot"]).into_array(),
+    ])
+    .into_array();
+
+    let numbers = ChunkedArray::from_iter([
+        buffer![1u32, 2, 3, 4].into_array(),
+        buffer![5u32, 6, 7, 8].into_array(),
+    ])
+    .into_array();
+
+    let st = StructArray::from_fields(&[("strings", strings), ("numbers", numbers)]).unwrap();
+    let expected_len = st.len();
+    let mut buf = ByteBufferMut::empty();
+    let summary = SESSION
+        .write_options()
+        .write(&mut buf, st.into_array().to_array_stream())
+        .await?;
+
+    let metadata = summary.footer().to_metadata_bytes()?;
+    let restored = crate::Footer::from_metadata_bytes(metadata, SESSION.clone())?;
+    assert_eq!(restored.row_count(), summary.footer().row_count());
+    assert_eq!(restored.dtype(), summary.footer().dtype());
+    assert_eq!(
+        restored.segment_map().len(),
+        summary.footer().segment_map().len()
+    );
+    for (restored, original) in restored
+        .segment_map()
+        .iter()
+        .zip(summary.footer().segment_map().iter())
+    {
+        assert_eq!(restored.offset, original.offset);
+        assert_eq!(restored.length, original.length);
+        assert_eq!(restored.alignment, original.alignment);
+    }
+
+    let file = SESSION
+        .open_options()
+        .with_footer(restored)
+        .open(Arc::new(buf.freeze()))
+        .await?;
+    let array = file.scan()?.into_array_stream()?.read_all().await?;
+    assert_eq!(array.len(), expected_len);
+
+    Ok(())
+}
+
+#[tokio::test]
+#[cfg_attr(miri, ignore)]
 async fn test_round_trip_many_types() {
     let strings = VarBinArray::from(vec!["ab", "foo", "bar"]).into_array();
 

@@ -27,6 +27,7 @@ pub use segment::*;
 use vortex_array::ArrayId;
 use vortex_array::dtype::DType;
 use vortex_buffer::ByteBuffer;
+use vortex_buffer::ByteBufferMut;
 use vortex_error::VortexResult;
 use vortex_error::vortex_bail;
 use vortex_error::vortex_err;
@@ -164,6 +165,38 @@ impl Footer {
     /// Returns a serializer for this footer.
     pub fn into_serializer(self) -> FooterSerializer {
         FooterSerializer::new(self)
+    }
+
+    /// Serialize this footer into one portable metadata buffer.
+    ///
+    /// The returned bytes can be stored out-of-band, for example in an object
+    /// manifest or metadata sidecar, and later restored with
+    /// [`Footer::from_metadata_bytes`]. Callers can then pass the restored
+    /// footer to [`crate::VortexOpenOptions::with_footer`] to open a file
+    /// without performing footer discovery I/O.
+    pub fn to_metadata_bytes(&self) -> VortexResult<ByteBuffer> {
+        let buffers = self.clone().into_serializer().serialize()?;
+        let total_len = buffers.iter().map(ByteBuffer::len).sum();
+        let mut out = ByteBufferMut::with_capacity(total_len);
+        for buffer in buffers {
+            out.extend_from_slice(&buffer);
+        }
+        Ok(out.freeze())
+    }
+
+    /// Restore a footer previously produced by [`Footer::to_metadata_bytes`].
+    pub fn from_metadata_bytes(metadata: ByteBuffer, session: VortexSession) -> VortexResult<Self> {
+        let metadata_len = u64::try_from(metadata.len())?;
+        let mut deserializer = Self::deserializer(metadata, session).with_size(metadata_len);
+        match deserializer.deserialize()? {
+            DeserializeStep::Done(footer) => Ok(footer),
+            DeserializeStep::NeedMoreData { offset, len } => vortex_bail!(
+                "serialized footer metadata is incomplete; needs {len} more bytes at offset {offset}"
+            ),
+            DeserializeStep::NeedFileSize => {
+                vortex_bail!("serialized footer metadata unexpectedly requires file size")
+            }
+        }
     }
 
     /// Create a deserializer for a Vortex file footer.
