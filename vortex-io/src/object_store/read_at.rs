@@ -3,8 +3,10 @@
 
 use std::io;
 use std::sync::Arc;
-use std::sync::atomic::{AtomicU64, Ordering};
-use std::time::{Duration, Instant};
+use std::sync::atomic::AtomicU64;
+use std::sync::atomic::Ordering;
+use std::time::Duration;
+use std::time::Instant;
 
 use futures::FutureExt;
 use futures::StreamExt;
@@ -18,7 +20,8 @@ use object_store::ObjectStoreExt;
 use object_store::path::Path as ObjectPath;
 use vortex_array::buffer::BufferHandle;
 use vortex_array::memory::DefaultHostAllocator;
-use vortex_array::memory::{HostAllocatorRef, WritableHostBuffer};
+use vortex_array::memory::HostAllocatorRef;
+use vortex_array::memory::WritableHostBuffer;
 use vortex_buffer::Alignment;
 use vortex_error::VortexError;
 use vortex_error::VortexResult;
@@ -44,6 +47,75 @@ pub struct ObjectStoreReadHedgeConfig {
 impl ObjectStoreReadHedgeConfig {
     fn applies_to(self, length: usize) -> bool {
         self.delay > Duration::ZERO && length >= self.min_bytes && length <= self.max_bytes
+    }
+}
+
+/// Complete object-store I/O profile for a [`VortexReadAt`] source.
+///
+/// This bundles the knobs that are meaningful together for object-backed
+/// serving paths: request concurrency, Vortex range coalescing, and optional
+/// bounded tail hedging for physical GETs.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct ObjectStoreReadProfile {
+    /// Maximum number of in-flight logical Vortex reads.
+    pub concurrency: usize,
+    /// Optional coalescing of nearby logical Vortex reads into larger physical reads.
+    pub coalesce_config: Option<CoalesceConfig>,
+    /// Optional bounded hedging for physical object-store range reads.
+    pub hedge_config: Option<ObjectStoreReadHedgeConfig>,
+}
+
+impl ObjectStoreReadProfile {
+    /// Create a profile from explicit object-store read settings.
+    pub const fn new(
+        concurrency: usize,
+        coalesce_config: Option<CoalesceConfig>,
+        hedge_config: Option<ObjectStoreReadHedgeConfig>,
+    ) -> Self {
+        Self {
+            concurrency,
+            coalesce_config,
+            hedge_config,
+        }
+    }
+
+    /// Default profile for object stores such as S3, GCS, or compatible stores.
+    pub const fn object_storage() -> Self {
+        Self::new(
+            DEFAULT_CONCURRENCY,
+            Some(CoalesceConfig::object_storage()),
+            None,
+        )
+    }
+
+    /// Override request concurrency.
+    pub const fn with_concurrency(mut self, concurrency: usize) -> Self {
+        self.concurrency = concurrency;
+        self
+    }
+
+    /// Override coalescing behavior.
+    pub const fn with_coalesce_config(mut self, config: CoalesceConfig) -> Self {
+        self.coalesce_config = Some(config);
+        self
+    }
+
+    /// Disable coalescing for this profile.
+    pub const fn without_coalesce_config(mut self) -> Self {
+        self.coalesce_config = None;
+        self
+    }
+
+    /// Override bounded tail hedging.
+    pub const fn with_hedge_config(mut self, config: ObjectStoreReadHedgeConfig) -> Self {
+        self.hedge_config = Some(config);
+        self
+    }
+
+    /// Disable bounded tail hedging for this profile.
+    pub const fn without_hedge_config(mut self) -> Self {
+        self.hedge_config = None;
+        self
     }
 }
 
@@ -151,6 +223,14 @@ impl ObjectStoreReadAt {
             hedge_config: None,
             stats: None,
         }
+    }
+
+    /// Apply an object-store read profile.
+    pub fn with_profile(mut self, profile: ObjectStoreReadProfile) -> Self {
+        self.concurrency = profile.concurrency;
+        self.coalesce_config = profile.coalesce_config;
+        self.hedge_config = profile.hedge_config;
+        self
     }
 
     /// Set the concurrency for this source.
@@ -490,6 +570,40 @@ mod tests {
         assert_eq!(stats.hedge_wins, 0);
         assert!(stats.total_completed_nanos > 0);
         assert!(stats.max_completed_nanos > 0);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn read_profile_configures_reader() -> anyhow::Result<()> {
+        let executor = Arc::new(CountingExecutor::default());
+        let runtime = Arc::clone(&executor) as Arc<dyn Executor>;
+        let handle = Handle::new(Arc::downgrade(&runtime));
+
+        let profile = ObjectStoreReadProfile::object_storage()
+            .with_concurrency(7)
+            .with_coalesce_config(CoalesceConfig::new(32, 64))
+            .with_hedge_config(ObjectStoreReadHedgeConfig {
+                delay: Duration::from_millis(10),
+                min_bytes: 1,
+                max_bytes: 128,
+            });
+
+        let store = Arc::new(InMemory::new()) as Arc<dyn ObjectStore>;
+        let path = ObjectPath::from("profile.bin");
+        store.put(&path, PutPayload::from_static(TEST_DATA)).await?;
+
+        let stats = Arc::new(ObjectStoreReadStats::default());
+        let reader = ObjectStoreReadAt::new(store, path, handle)
+            .with_profile(profile)
+            .with_stats(Arc::clone(&stats));
+
+        assert_eq!(reader.concurrency(), 7);
+        assert_eq!(reader.coalesce_config(), Some(CoalesceConfig::new(32, 64)));
+
+        let buffer = reader.read_at(0, 4, Alignment::new(1)).await?;
+        assert_eq!(buffer.to_host().await.as_slice(), b"obje");
+        assert_eq!(stats.snapshot().requests_started, 1);
 
         Ok(())
     }

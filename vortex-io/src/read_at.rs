@@ -19,7 +19,7 @@ use vortex_metrics::MetricsRegistry;
 use vortex_metrics::Timer;
 
 /// Configuration for coalescing nearby I/O requests into single operations.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct CoalesceConfig {
     /// The maximum "empty" distance between two requests to consider them for coalescing.
     pub distance: u64,
