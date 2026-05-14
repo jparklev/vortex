@@ -314,6 +314,8 @@ pub fn vortex_file::VortexOpenOptions::with_metrics_registry(self, alloc::sync::
 
 pub fn vortex_file::VortexOpenOptions::with_segment_cache(self, alloc::sync::Arc<dyn vortex_layout::segments::cache::SegmentCache>) -> Self
 
+pub fn vortex_file::VortexOpenOptions::with_segment_cache_capacity_bytes(self, u64) -> Self
+
 pub fn vortex_file::VortexOpenOptions::with_some_file_size(self, core::option::Option<u64>) -> Self
 
 impl vortex_file::VortexOpenOptions

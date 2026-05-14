@@ -16,6 +16,7 @@ use vortex_error::VortexResult;
 use vortex_io::VortexReadAt;
 use vortex_io::session::RuntimeSessionExt;
 use vortex_layout::segments::InstrumentedSegmentCache;
+use vortex_layout::segments::MokaSegmentCache;
 use vortex_layout::segments::NoOpSegmentCache;
 use vortex_layout::segments::SegmentCache;
 use vortex_layout::segments::SegmentCacheSourceAdapter;
@@ -96,6 +97,16 @@ impl VortexOpenOptions {
     pub fn with_segment_cache(mut self, segment_cache: Arc<dyn SegmentCache>) -> Self {
         self.segment_cache = Some(segment_cache);
         self
+    }
+
+    /// Configure a byte-bounded in-memory segment cache.
+    ///
+    /// This is a convenience wrapper around [`with_segment_cache`](Self::with_segment_cache)
+    /// for long-lived readers that repeatedly scan the same opened file. It is especially useful
+    /// for object-store serving paths where re-reading the same Vortex segments dominates small
+    /// predicate probes.
+    pub fn with_segment_cache_capacity_bytes(self, max_capacity_bytes: u64) -> Self {
+        self.with_segment_cache(Arc::new(MokaSegmentCache::new(max_capacity_bytes)))
     }
 
     /// Configure a known file size.
