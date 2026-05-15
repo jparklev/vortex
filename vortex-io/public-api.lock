@@ -200,6 +200,12 @@ pub fn vortex_io::object_store::ObjectStoreReadAt::with_coalesce_config(self, vo
 
 pub fn vortex_io::object_store::ObjectStoreReadAt::with_concurrency(self, usize) -> Self
 
+pub fn vortex_io::object_store::ObjectStoreReadAt::with_hedge_config(self, vortex_io::object_store::ObjectStoreReadHedgeConfig) -> Self
+
+pub fn vortex_io::object_store::ObjectStoreReadAt::with_profile(self, vortex_io::object_store::ObjectStoreReadProfile) -> Self
+
+pub fn vortex_io::object_store::ObjectStoreReadAt::with_stats(self, alloc::sync::Arc<vortex_io::object_store::ObjectStoreReadStats>) -> Self
+
 impl vortex_io::VortexReadAt for vortex_io::object_store::ObjectStoreReadAt
 
 pub fn vortex_io::object_store::ObjectStoreReadAt::coalesce_config(&self) -> core::option::Option<vortex_io::CoalesceConfig>
@@ -211,6 +217,128 @@ pub fn vortex_io::object_store::ObjectStoreReadAt::read_at(&self, u64, usize, vo
 pub fn vortex_io::object_store::ObjectStoreReadAt::size(&self) -> futures_core::future::BoxFuture<'static, vortex_error::VortexResult<u64>>
 
 pub fn vortex_io::object_store::ObjectStoreReadAt::uri(&self) -> core::option::Option<&alloc::sync::Arc<str>>
+
+pub struct vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+pub vortex_io::object_store::ObjectStoreReadHedgeConfig::delay: core::time::Duration
+
+pub vortex_io::object_store::ObjectStoreReadHedgeConfig::max_bytes: usize
+
+pub vortex_io::object_store::ObjectStoreReadHedgeConfig::min_bytes: usize
+
+impl core::clone::Clone for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+pub fn vortex_io::object_store::ObjectStoreReadHedgeConfig::clone(&self) -> vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+impl core::cmp::Eq for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+impl core::cmp::PartialEq for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+pub fn vortex_io::object_store::ObjectStoreReadHedgeConfig::eq(&self, &vortex_io::object_store::ObjectStoreReadHedgeConfig) -> bool
+
+impl core::fmt::Debug for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+pub fn vortex_io::object_store::ObjectStoreReadHedgeConfig::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+impl core::marker::Copy for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+impl core::marker::StructuralPartialEq for vortex_io::object_store::ObjectStoreReadHedgeConfig
+
+pub struct vortex_io::object_store::ObjectStoreReadProfile
+
+pub vortex_io::object_store::ObjectStoreReadProfile::coalesce_config: core::option::Option<vortex_io::CoalesceConfig>
+
+pub vortex_io::object_store::ObjectStoreReadProfile::concurrency: usize
+
+pub vortex_io::object_store::ObjectStoreReadProfile::hedge_config: core::option::Option<vortex_io::object_store::ObjectStoreReadHedgeConfig>
+
+impl vortex_io::object_store::ObjectStoreReadProfile
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::new(usize, core::option::Option<vortex_io::CoalesceConfig>, core::option::Option<vortex_io::object_store::ObjectStoreReadHedgeConfig>) -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::object_storage() -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::with_coalesce_config(self, vortex_io::CoalesceConfig) -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::with_concurrency(self, usize) -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::with_hedge_config(self, vortex_io::object_store::ObjectStoreReadHedgeConfig) -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::without_coalesce_config(self) -> Self
+
+pub const fn vortex_io::object_store::ObjectStoreReadProfile::without_hedge_config(self) -> Self
+
+impl core::clone::Clone for vortex_io::object_store::ObjectStoreReadProfile
+
+pub fn vortex_io::object_store::ObjectStoreReadProfile::clone(&self) -> vortex_io::object_store::ObjectStoreReadProfile
+
+impl core::cmp::Eq for vortex_io::object_store::ObjectStoreReadProfile
+
+impl core::cmp::PartialEq for vortex_io::object_store::ObjectStoreReadProfile
+
+pub fn vortex_io::object_store::ObjectStoreReadProfile::eq(&self, &vortex_io::object_store::ObjectStoreReadProfile) -> bool
+
+impl core::fmt::Debug for vortex_io::object_store::ObjectStoreReadProfile
+
+pub fn vortex_io::object_store::ObjectStoreReadProfile::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+impl core::marker::Copy for vortex_io::object_store::ObjectStoreReadProfile
+
+impl core::marker::StructuralPartialEq for vortex_io::object_store::ObjectStoreReadProfile
+
+pub struct vortex_io::object_store::ObjectStoreReadStats
+
+impl vortex_io::object_store::ObjectStoreReadStats
+
+pub fn vortex_io::object_store::ObjectStoreReadStats::snapshot(&self) -> vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+impl core::default::Default for vortex_io::object_store::ObjectStoreReadStats
+
+pub fn vortex_io::object_store::ObjectStoreReadStats::default() -> vortex_io::object_store::ObjectStoreReadStats
+
+impl core::fmt::Debug for vortex_io::object_store::ObjectStoreReadStats
+
+pub fn vortex_io::object_store::ObjectStoreReadStats::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+pub struct vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::bytes_started: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::hedge_requests_started: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::hedge_wins: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::max_bytes_started: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::max_completed_nanos: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::requests_completed: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::requests_started: u64
+
+pub vortex_io::object_store::ObjectStoreReadStatsSnapshot::total_completed_nanos: u64
+
+impl core::clone::Clone for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+pub fn vortex_io::object_store::ObjectStoreReadStatsSnapshot::clone(&self) -> vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+impl core::cmp::Eq for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+impl core::cmp::PartialEq for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+pub fn vortex_io::object_store::ObjectStoreReadStatsSnapshot::eq(&self, &vortex_io::object_store::ObjectStoreReadStatsSnapshot) -> bool
+
+impl core::default::Default for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+pub fn vortex_io::object_store::ObjectStoreReadStatsSnapshot::default() -> vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+impl core::fmt::Debug for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+pub fn vortex_io::object_store::ObjectStoreReadStatsSnapshot::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+
+impl core::marker::Copy for vortex_io::object_store::ObjectStoreReadStatsSnapshot
+
+impl core::marker::StructuralPartialEq for vortex_io::object_store::ObjectStoreReadStatsSnapshot
 
 pub struct vortex_io::object_store::ObjectStoreWrite
 
@@ -574,11 +702,19 @@ impl core::clone::Clone for vortex_io::CoalesceConfig
 
 pub fn vortex_io::CoalesceConfig::clone(&self) -> vortex_io::CoalesceConfig
 
+impl core::cmp::Eq for vortex_io::CoalesceConfig
+
+impl core::cmp::PartialEq for vortex_io::CoalesceConfig
+
+pub fn vortex_io::CoalesceConfig::eq(&self, &vortex_io::CoalesceConfig) -> bool
+
 impl core::fmt::Debug for vortex_io::CoalesceConfig
 
 pub fn vortex_io::CoalesceConfig::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
 
 impl core::marker::Copy for vortex_io::CoalesceConfig
+
+impl core::marker::StructuralPartialEq for vortex_io::CoalesceConfig
 
 pub struct vortex_io::InstrumentedReadAt<T: vortex_io::VortexReadAt + core::clone::Clone>
 

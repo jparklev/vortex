@@ -9,7 +9,7 @@ use vortex_array::ExecutionCtx;
 use vortex_array::aggregate_fn::fns::is_constant::is_constant;
 use vortex_error::VortexResult;
 
-use super::is_utf8_string;
+use super::is_binary_string;
 use crate::CascadingCompressor;
 use crate::builtins::StringConstantScheme;
 use crate::builtins::constant::compress_constant_array_with_validity;
@@ -26,7 +26,7 @@ impl Scheme for StringConstantScheme {
     }
 
     fn matches(&self, canonical: &Canonical) -> bool {
-        is_utf8_string(canonical)
+        is_binary_string(canonical)
     }
 
     fn expected_compression_ratio(

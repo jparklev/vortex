@@ -274,6 +274,8 @@ pub fn vortex_compressor::builtins::integer_dictionary_encode(vortex_array::arra
 
 pub fn vortex_compressor::builtins::is_float_primitive(&vortex_array::canonical::Canonical) -> bool
 
+pub fn vortex_compressor::builtins::is_binary_string(&vortex_array::canonical::Canonical) -> bool
+
 pub fn vortex_compressor::builtins::is_integer_primitive(&vortex_array::canonical::Canonical) -> bool
 
 pub fn vortex_compressor::builtins::is_utf8_string(&vortex_array::canonical::Canonical) -> bool

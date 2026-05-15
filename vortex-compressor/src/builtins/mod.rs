@@ -32,6 +32,21 @@ pub fn is_utf8_string(canonical: &Canonical) -> bool {
     )
 }
 
+/// Returns `true` if the canonical array is a variable-length byte string
+/// (either UTF-8 or opaque Binary).
+///
+/// Used by string-oriented schemes that operate on the raw byte contents
+/// and do not require UTF-8 validity (FSST, Zstd, Dict, Constant). Schemes
+/// whose internal representation assumes UTF-8 (e.g. NullDominatedSparse,
+/// ZstdBuffers) should keep using [`is_utf8_string`].
+pub fn is_binary_string(canonical: &Canonical) -> bool {
+    matches!(canonical,
+        Canonical::VarBinView(v) if
+            v.dtype().eq_ignore_nullability(&DType::Utf8(Nullability::NonNullable))
+            || v.dtype().eq_ignore_nullability(&DType::Binary(Nullability::NonNullable))
+    )
+}
+
 mod dict;
 
 pub use dict::FloatDictScheme;

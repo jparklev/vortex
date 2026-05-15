@@ -524,6 +524,8 @@ pub use vortex_btrblocks::schemes::string::StringDictScheme
 
 pub use vortex_btrblocks::schemes::string::StringStats
 
+pub use vortex_btrblocks::schemes::string::is_binary_string
+
 pub use vortex_btrblocks::schemes::string::is_utf8_string
 
 pub struct vortex_btrblocks::schemes::string::FSSTScheme

@@ -12,9 +12,9 @@ use vortex_array::scalar::Scalar;
 use vortex_error::VortexExpect;
 use vortex_error::VortexResult;
 
+use super::is_binary_string;
 use super::is_float_primitive;
 use super::is_integer_primitive;
-use super::is_utf8_string;
 
 /// Constant encoding for bool arrays where all valid values are the same.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
