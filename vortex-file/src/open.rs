@@ -57,6 +57,12 @@ pub struct VortexOpenOptions {
     footer: Option<Footer>,
     /// The segments read during the initial read.
     initial_read_segments: RwLock<HashMap<SegmentId, ByteBuffer>>,
+    /// File byte ranges supplied by the caller before open.
+    ///
+    /// These let object-store callers carry a hot zone next to manifest/footer
+    /// metadata and seed the segment cache even when `with_footer` skips footer
+    /// discovery I/O entirely.
+    preloaded_file_ranges: Vec<(u64, ByteBuffer)>,
     /// A metrics registry for the file.
     metrics_registry: Option<Arc<dyn MetricsRegistry>>,
     /// Default labels applied to all the file's metrics
@@ -76,6 +82,7 @@ pub trait OpenOptionsSessionExt:
             dtype: None,
             footer: None,
             initial_read_segments: Default::default(),
+            preloaded_file_ranges: Vec::new(),
             metrics_registry: None,
             labels: Vec::default(),
         }
@@ -144,6 +151,20 @@ impl VortexOpenOptions {
     pub fn with_footer(mut self, footer: Footer) -> Self {
         self.dtype = Some(footer.layout().dtype().clone());
         self.footer = Some(footer);
+        self
+    }
+
+    /// Seed the opened file's segment cache from bytes already read elsewhere.
+    ///
+    /// The `offset` is the byte offset of `data` within the Vortex file. After
+    /// the footer is known, any complete file segments covered by this range are
+    /// installed into the initial segment cache. This is useful for object-store
+    /// serving paths that fetch a small hot zone out-of-band and then open with
+    /// manifest-provided footer metadata.
+    pub fn with_preloaded_file_range(mut self, offset: u64, data: ByteBuffer) -> Self {
+        if !data.is_empty() {
+            self.preloaded_file_ranges.push((offset, data));
+        }
         self
     }
 
@@ -224,11 +245,13 @@ impl VortexOpenOptions {
             .clone()
             .unwrap_or_else(|| Arc::new(DefaultMetricsRegistry::default()));
 
-        let footer = if let Some(footer) = self.footer {
-            footer
-        } else {
-            self.read_footer(&reader).await?
+        let footer = match &self.footer {
+            Some(footer) => footer.clone(),
+            None => self.read_footer(&reader).await?,
         };
+        for (offset, data) in &self.preloaded_file_ranges {
+            self.populate_initial_segments(*offset, data, &footer);
+        }
 
         let segment_cache = Arc::new(InstrumentedSegmentCache::new(
             InitialReadSegmentCache {
@@ -322,9 +345,16 @@ impl VortexOpenOptions {
             .partition_point(|segment| segment.offset < initial_offset);
 
         let mut initial_read_segments = self.initial_read_segments.write();
+        let initial_end = initial_offset + initial_read.len() as u64;
 
         for idx in first_idx..footer.segment_map().len() {
             let segment = &footer.segment_map()[idx];
+            if segment.offset >= initial_end {
+                break;
+            }
+            if segment.byte_range().end > initial_end {
+                continue;
+            }
             let segment_id =
                 SegmentId::from(u32::try_from(idx).vortex_expect("Invalid segment ID"));
             let offset =
@@ -484,6 +514,65 @@ mod tests {
         );
         let read = total_read.load(Ordering::Relaxed);
         assert!(read < 1024 * 1024, "Read {} bytes, expected < 1MB", read);
+    }
+
+    #[tokio::test]
+    async fn preloaded_file_range_seeds_segment_cache_with_external_footer() {
+        let session = VortexSession::empty()
+            .with::<DTypeSession>()
+            .with::<ArraySession>()
+            .with::<LayoutSession>()
+            .with::<ScalarFnSession>()
+            .with::<RuntimeSession>();
+
+        crate::register_default_encodings(&session);
+
+        let mut buf = Vec::new();
+        let array = Buffer::from((0i32..16_384).collect::<Vec<i32>>()).into_array();
+        let summary = session
+            .write_options()
+            .write(&mut buf, array.to_array_stream())
+            .await
+            .unwrap();
+
+        let buffer = ByteBuffer::copy_from(&buf);
+        let (segment_idx, segment) = summary
+            .footer()
+            .segment_map()
+            .iter()
+            .enumerate()
+            .find(|(_, segment)| segment.length > 0)
+            .expect("test file should contain at least one non-empty segment");
+        let start = usize::try_from(segment.offset).unwrap();
+        let end = start + usize::try_from(segment.length).unwrap();
+        let hot_range = buffer.slice(start..end);
+
+        let total_read = Arc::new(AtomicUsize::new(0));
+        let first_read_len = Arc::new(AtomicUsize::new(0));
+        let reader = CountingRead {
+            inner: buffer,
+            total_read: Arc::clone(&total_read),
+            first_read_len,
+        };
+
+        let file = session
+            .open_options()
+            .with_footer(summary.footer().clone())
+            .with_preloaded_file_range(segment.offset, hot_range)
+            .open_read(reader)
+            .await
+            .unwrap();
+
+        file.segment_source()
+            .request(SegmentId::from(u32::try_from(segment_idx).unwrap()))
+            .await
+            .unwrap();
+
+        assert_eq!(
+            total_read.load(Ordering::Relaxed),
+            0,
+            "preloaded segment should be served without footer or segment I/O"
+        );
     }
 
     #[cfg(not(target_arch = "wasm32"))]

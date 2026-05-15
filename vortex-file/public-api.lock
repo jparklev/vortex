@@ -312,6 +312,8 @@ pub fn vortex_file::VortexOpenOptions::with_labels(self, alloc::vec::Vec<vortex_
 
 pub fn vortex_file::VortexOpenOptions::with_metrics_registry(self, alloc::sync::Arc<dyn vortex_metrics::MetricsRegistry>) -> Self
 
+pub fn vortex_file::VortexOpenOptions::with_preloaded_file_range(self, u64, vortex_buffer::ByteBuffer) -> Self
+
 pub fn vortex_file::VortexOpenOptions::with_segment_cache(self, alloc::sync::Arc<dyn vortex_layout::segments::cache::SegmentCache>) -> Self
 
 pub fn vortex_file::VortexOpenOptions::with_segment_cache_capacity_bytes(self, u64) -> Self
